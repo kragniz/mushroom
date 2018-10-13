@@ -4,6 +4,6 @@ mushroom
 build
 -----
 
-    meson builddir
-    ninja -C builddir
+    meson build
+    ninja -C build
 
