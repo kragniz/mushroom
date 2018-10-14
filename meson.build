@@ -13,6 +13,7 @@ mushroom_inc = include_directories('include')
 
 sources = files([
     'jump.c',
+    'node.c',
 ])
 
 mushroom = executable(
