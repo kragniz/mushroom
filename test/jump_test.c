@@ -18,10 +18,10 @@ static char *test_jump()
 	h = jump_consistent_hash(0xDEAD10CC, 1);
 	mshrm_assert("error, jump_consistent_hash != 0", h == 0);
 
-        h = jump_consistent_hash(0xDEAD10CC, 666);
+	h = jump_consistent_hash(0xDEAD10CC, 666);
 	mshrm_assert("error, jump_consistent_hash != 361", h == 361);
 
-        h = jump_consistent_hash(256, 1024);
+	h = jump_consistent_hash(256, 1024);
 	mshrm_assert("error, jump_consistent_hash != 520", h == 520);
 	return 0;
 }

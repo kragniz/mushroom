@@ -1,6 +1,7 @@
 test_units = [
   'jump_test',
   'node_test',
+  'ring_test',
 ]
 
 foreach test_unit: test_units
