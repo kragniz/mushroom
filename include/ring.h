@@ -3,7 +3,7 @@
 #include "node.h"
 
 struct mushroom_ring {
-	uint16_t node_count;
+	uint32_t node_count;
 	struct mushroom_node *nodes;
 };
 
@@ -14,6 +14,6 @@ void mushroom_ring_add_node(struct mushroom_ring *ring,
 			    const struct mushroom_node *node);
 
 struct mushroom_node *mushroom_ring_get_node(struct mushroom_ring *ring,
-					     uint16_t node_index);
+					     uint32_t node_index);
 
 uint64_t djb2_hash(char *str);

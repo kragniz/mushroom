@@ -27,7 +27,7 @@ void mushroom_ring_add_node(struct mushroom_ring *ring,
 }
 
 struct mushroom_node *mushroom_ring_get_node(struct mushroom_ring *ring,
-					     uint16_t node_index)
+					     uint32_t node_index)
 {
 	if (node_index >= ring->node_count)
 		return NULL;

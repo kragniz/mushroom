@@ -4,7 +4,7 @@
 
 #include "node.h"
 
-struct mushroom_node *mushroom_node_new(uint16_t id, const char *address)
+struct mushroom_node *mushroom_node_new(uint32_t id, const char *address)
 {
 	struct mushroom_node *node = calloc(1, sizeof(struct mushroom_node));
 	node->id = id;
