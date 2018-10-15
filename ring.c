@@ -34,3 +34,15 @@ struct mushroom_node *mushroom_ring_get_node(struct mushroom_ring *ring,
 
 	return &ring->nodes[node_index];
 }
+
+/* see http://www.cse.yorku.ca/~oz/hash.html */
+uint64_t djb2_hash(char *str)
+{
+	uint64_t hash = 5381;
+	int c;
+
+	while ((c = *str++))
+		hash = ((hash << 5) + hash) + c;
+
+	return hash;
+}

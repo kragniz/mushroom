@@ -10,14 +10,16 @@ int tests_run = 0;
 
 static char *test_ring()
 {
+	/* create a new ring */
 	struct mushroom_ring *ring = mushroom_ring_new();
 
 	mshrm_assert("error, node_count not set to 0", ring->node_count == 0);
 
-	struct mushroom_node *node = mushroom_node_new(0, "127.0.0.1");
-	mushroom_ring_add_node(ring, node);
+	/* add a node to the ring */
+	struct mushroom_node *node1 = mushroom_node_new(0, "127.0.0.1");
+	mushroom_ring_add_node(ring, node1);
 
-	mushroom_node_free(node);
+	mushroom_node_free(node1);
 
 	struct mushroom_node *node_copy = mushroom_ring_get_node(ring, 0);
 
@@ -26,8 +28,36 @@ static char *test_ring()
 
 	mshrm_assert("error, node_count not set to 1", ring->node_count == 1);
 
+	/* try to get a node that doesn't exist */
 	struct mushroom_node *invalid_node = mushroom_ring_get_node(ring, 3);
 	mshrm_assert("error, node not set to NULL", invalid_node == NULL);
+
+	/* add a second node */
+	struct mushroom_node *node2 = mushroom_node_new(1, "127.0.0.2");
+	mushroom_ring_add_node(ring, node2);
+
+	mushroom_node_free(node2);
+
+	struct mushroom_node *node2_copy = mushroom_ring_get_node(ring, 1);
+
+	mshrm_assert("error, address not set",
+		     strncmp(node2_copy->address, "127.0.0.2", 9) == 0);
+
+	mshrm_assert("error, node_count not set to 2", ring->node_count == 2);
+
+	return 0;
+}
+
+static char *test_djb2_hash()
+{
+	uint64_t hello = djb2_hash("hello");
+	mshrm_assert("error, hello != 210714636441", hello == 210714636441);
+
+	uint64_t zero = djb2_hash("0");
+	mshrm_assert("error, zero != 177621", zero == 177621);
+
+	uint64_t empty = djb2_hash("");
+	mshrm_assert("error, empty != 0", empty == 5381);
 
 	return 0;
 }
@@ -35,6 +65,7 @@ static char *test_ring()
 static char *all_tests()
 {
 	mshrm_run_test(test_ring);
+	mshrm_run_test(test_djb2_hash);
 	return 0;
 }
 
