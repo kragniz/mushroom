@@ -7,7 +7,12 @@ project('mushroom', 'c',
   ],
 )
 
-add_project_arguments('-Wno-unused-parameter', language: 'c')
+add_project_arguments([
+  '-Wshadow',
+  '-Wno-unused-parameter',
+  '-Wstrict-overflow',
+  '-fno-strict-aliasing',
+], language: 'c')
 
 mushroom_inc = include_directories('include')
 
