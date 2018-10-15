@@ -1,5 +1,6 @@
 #include <stdlib.h>
 
+#include "jump.h"
 #include "ring.h"
 
 struct mushroom_ring *mushroom_ring_new(void)
@@ -45,4 +46,12 @@ uint64_t djb2_hash(char *str)
 		hash = ((hash << 5) + hash) + c;
 
 	return hash;
+}
+
+struct mushroom_node *mushroom_ring_node_for_key(struct mushroom_ring *ring,
+						 char *key_name)
+{
+	uint64_t key = djb2_hash(key_name);
+	uint32_t node_index = jump_consistent_hash(key, ring->node_count);
+	return mushroom_ring_get_node(ring, node_index);
 }

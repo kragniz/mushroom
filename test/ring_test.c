@@ -45,6 +45,31 @@ static char *test_ring()
 
 	mshrm_assert("error, node_count not set to 2", ring->node_count == 2);
 
+	/* add a whole bunch more nodes */
+	for (int i = 2; i < 24; i++) {
+		char node_address[24];
+		sprintf(node_address, "127.0.0.%i", i);
+		struct mushroom_node *n = mushroom_node_new(i, node_address);
+		mushroom_ring_add_node(ring, n);
+		mushroom_node_free(n);
+	}
+
+	mshrm_assert("error, node_count not set to 24", ring->node_count == 24);
+
+	/* get the correct node for a key */
+	struct mushroom_node *toot1 = mushroom_ring_node_for_key(ring, "toot1");
+	struct mushroom_node *toot2 = mushroom_ring_node_for_key(ring, "toot2");
+	struct mushroom_node *toot3 = mushroom_ring_node_for_key(ring, "toot3");
+
+	mshrm_assert("error, toot1 assigned to wrong node",
+		     strncmp(toot1->address, "127.0.0.15", 9) == 0);
+
+	mshrm_assert("error, toot2 assigned to wrong node",
+		     strncmp(toot2->address, "127.0.0.7", 9) == 0);
+
+	mshrm_assert("error, toot3 assigned to wrong node",
+		     strncmp(toot3->address, "127.0.0.20", 9) == 0);
+
 	return 0;
 }
 

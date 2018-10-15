@@ -16,4 +16,7 @@ void mushroom_ring_add_node(struct mushroom_ring *ring,
 struct mushroom_node *mushroom_ring_get_node(struct mushroom_ring *ring,
 					     uint32_t node_index);
 
+struct mushroom_node *mushroom_ring_node_for_key(struct mushroom_ring *ring,
+						 char *key_name);
+
 uint64_t djb2_hash(char *str);
