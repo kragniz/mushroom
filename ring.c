@@ -3,18 +3,23 @@
 #include "jump.h"
 #include "ring.h"
 
+static size_t _nodes_size(struct mushroom_ring *ring)
+{
+	return sizeof(struct mushroom_node *) * ring->node_count;
+}
+
 struct mushroom_ring *mushroom_ring_new(void)
 {
 	struct mushroom_ring *ring = calloc(1, sizeof(struct mushroom_ring));
 	ring->node_count = 0;
-	ring->nodes = malloc(sizeof(struct mushroom_node*) * ring->node_count);
+	ring->nodes = malloc(_nodes_size(ring));
 
 	return ring;
 }
 
 void mushroom_ring_free(struct mushroom_ring *ring)
 {
-	for (uint32_t i=0; i<ring->node_count; i++) {
+	for (uint32_t i = 0; i < ring->node_count; i++) {
 		mushroom_node_free(ring->nodes[i]);
 	}
 	free(ring->nodes);
@@ -25,8 +30,7 @@ void mushroom_ring_add_node(struct mushroom_ring *ring,
 			    const struct mushroom_node *node)
 {
 	ring->node_count++;
-	ring->nodes = realloc(ring->nodes,
-			      sizeof(struct mushroom_node*) * ring->node_count);
+	ring->nodes = realloc(ring->nodes, _nodes_size(ring));
 	ring->nodes[ring->node_count - 1] = mushroom_node_copy(node);
 }
 
