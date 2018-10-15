@@ -70,6 +70,8 @@ static char *test_ring()
 	mshrm_assert("error, toot3 assigned to wrong node",
 		     strncmp(toot3->address, "127.0.0.20", 9) == 0);
 
+	mushroom_ring_free(ring);
+
 	return 0;
 }
 

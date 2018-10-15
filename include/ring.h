@@ -4,7 +4,7 @@
 
 struct mushroom_ring {
 	uint32_t node_count;
-	struct mushroom_node *nodes;
+	struct mushroom_node **nodes;
 };
 
 struct mushroom_ring *mushroom_ring_new(void);
