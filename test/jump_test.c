@@ -1,46 +1,40 @@
-#include <stdio.h>
-
 #include "jump.h"
 
-#include "test.h"
+#include "greatest.h"
 
-int tests_run = 0;
-
-static char *test_jump()
+TEST test_jump(void)
 {
 	/* test values taken from lithammer/python-jump-consistent-hash */
 	int32_t h = jump_consistent_hash(1, 1);
-	mshrm_assert("error, jump_consistent_hash != 0", h == 0);
+
+	ASSERT_EQ_FMT(h, 0, "%d");
 
 	h = jump_consistent_hash(42, 57);
-	mshrm_assert("error, jump_consistent_hash != 43", h == 43);
+	ASSERT_EQ_FMT(h, 43, "%d");
 
 	h = jump_consistent_hash(0xDEAD10CC, 1);
-	mshrm_assert("error, jump_consistent_hash != 0", h == 0);
+	ASSERT_EQ_FMT(h, 1, "%d");
 
 	h = jump_consistent_hash(0xDEAD10CC, 666);
-	mshrm_assert("error, jump_consistent_hash != 361", h == 361);
+	ASSERT_EQ_FMT(h, 361, "%d");
 
 	h = jump_consistent_hash(256, 1024);
-	mshrm_assert("error, jump_consistent_hash != 520", h == 520);
-	return 0;
+	ASSERT_EQ_FMT(h, 520, "%d");
+
+	PASS();
 }
 
-static char *all_tests()
+SUITE(jump_suite)
 {
-	mshrm_run_test(test_jump);
-	return 0;
+	RUN_TEST(test_jump);
 }
 
-int main()
-{
-	char *result = all_tests();
-	if (result != 0) {
-		printf("%s\n", result);
-	} else {
-		printf("ALL TESTS PASSED\n");
-	}
-	printf("Tests run: %d\n", tests_run);
+GREATEST_MAIN_DEFS();
 
-	return result != 0;
+int main(int argc, char **argv)
+{
+	GREATEST_MAIN_BEGIN();
+	RUN_SUITE(jump_suite);
+
+	GREATEST_MAIN_END();
 }

@@ -4,11 +4,13 @@ test_units = [
   'ring_test',
 ]
 
+greatest = include_directories('deps/greatest')
+
 foreach test_unit: test_units
   exe = executable(
     test_unit,
     sources + [test_unit + '.c'],
-    include_directories: [mushroom_inc],
+    include_directories: [mushroom_inc] + [greatest],
   )
 
   test(
