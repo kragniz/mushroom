@@ -1,0 +1,3 @@
+[submodule "test/deps/greatest"]
+	path = test/deps/greatest
+	url = https://github.com/silentbicycle/greatest.git
