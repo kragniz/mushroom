@@ -1,19 +1,16 @@
 #include <stdio.h>
-#include <string.h>
 
 #include "ring.h"
 #include "node.h"
 
-#include "test.h"
+#include "greatest.h"
 
-int tests_run = 0;
-
-static char *test_ring()
+TEST test_ring(void)
 {
 	/* create a new ring */
 	struct mushroom_ring *ring = mushroom_ring_new();
 
-	mshrm_assert("error, node_count not set to 0", ring->node_count == 0);
+	ASSERT_EQ_FMT(ring->node_count, 0, "%i");
 
 	/* add a node to the ring */
 	struct mushroom_node *node1 = mushroom_node_new(0, "127.0.0.1");
@@ -23,14 +20,12 @@ static char *test_ring()
 
 	struct mushroom_node *node_copy = mushroom_ring_get_node(ring, 0);
 
-	mshrm_assert("error, address not set",
-		     strncmp(node_copy->address, "127.0.0.1", 9) == 0);
-
-	mshrm_assert("error, node_count not set to 1", ring->node_count == 1);
+	ASSERT_STR_EQ(node_copy->address, "127.0.0.1");
+	ASSERT_EQ_FMT(ring->node_count, 1, "%i");
 
 	/* try to get a node that doesn't exist */
 	struct mushroom_node *invalid_node = mushroom_ring_get_node(ring, 3);
-	mshrm_assert("error, node not set to NULL", invalid_node == NULL);
+	ASSERT_EQ(invalid_node, NULL);
 
 	/* add a second node */
 	struct mushroom_node *node2 = mushroom_node_new(1, "127.0.0.2");
@@ -40,10 +35,8 @@ static char *test_ring()
 
 	struct mushroom_node *node2_copy = mushroom_ring_get_node(ring, 1);
 
-	mshrm_assert("error, address not set",
-		     strncmp(node2_copy->address, "127.0.0.2", 9) == 0);
-
-	mshrm_assert("error, node_count not set to 2", ring->node_count == 2);
+	ASSERT_STR_EQ(node2_copy->address, "127.0.0.2");
+	ASSERT_EQ_FMT(ring->node_count, 2, "%i");
 
 	/* add a whole bunch more nodes */
 	for (int i = 2; i < 24; i++) {
@@ -54,57 +47,48 @@ static char *test_ring()
 		mushroom_node_free(n);
 	}
 
-	mshrm_assert("error, node_count not set to 24", ring->node_count == 24);
+	ASSERT_EQ_FMT(ring->node_count, 24, "%i");
 
 	/* get the correct node for a key */
 	struct mushroom_node *toot1 = mushroom_ring_node_for_key(ring, "toot1");
 	struct mushroom_node *toot2 = mushroom_ring_node_for_key(ring, "toot2");
 	struct mushroom_node *toot3 = mushroom_ring_node_for_key(ring, "toot3");
 
-	mshrm_assert("error, toot1 assigned to wrong node",
-		     strncmp(toot1->address, "127.0.0.15", 9) == 0);
-
-	mshrm_assert("error, toot2 assigned to wrong node",
-		     strncmp(toot2->address, "127.0.0.7", 9) == 0);
-
-	mshrm_assert("error, toot3 assigned to wrong node",
-		     strncmp(toot3->address, "127.0.0.20", 9) == 0);
+	ASSERT_STR_EQ(toot1->address, "127.0.0.15");
+	ASSERT_STR_EQ(toot2->address, "127.0.0.7");
+	ASSERT_STR_EQ(toot3->address, "127.0.0.20");
 
 	mushroom_ring_free(ring);
 
-	return 0;
+	PASS();
 }
 
-static char *test_djb2_hash()
+TEST test_djb2_hash(void)
 {
 	uint64_t hello = djb2_hash("hello");
-	mshrm_assert("error, hello != 210714636441", hello == 210714636441);
+	ASSERT_EQ_FMT(hello, (uint64_t)210714636441, "%lu");
 
 	uint64_t zero = djb2_hash("0");
-	mshrm_assert("error, zero != 177621", zero == 177621);
+	ASSERT_EQ_FMT(zero, (uint64_t)177621, "%lu");
 
 	uint64_t empty = djb2_hash("");
-	mshrm_assert("error, empty != 0", empty == 5381);
+	ASSERT_EQ_FMT(empty, (uint64_t)5381, "%lu");
 
-	return 0;
+	PASS();
 }
 
-static char *all_tests()
+SUITE(ring_suite)
 {
-	mshrm_run_test(test_ring);
-	mshrm_run_test(test_djb2_hash);
-	return 0;
+	RUN_TEST(test_ring);
+	RUN_TEST(test_djb2_hash);
 }
 
-int main()
-{
-	char *result = all_tests();
-	if (result != 0) {
-		printf("%s\n", result);
-	} else {
-		printf("ALL TESTS PASSED\n");
-	}
-	printf("Tests run: %d\n", tests_run);
+GREATEST_MAIN_DEFS();
 
-	return result != 0;
+int main(int argc, char **argv)
+{
+	GREATEST_MAIN_BEGIN();
+	RUN_SUITE(ring_suite);
+
+	GREATEST_MAIN_END();
 }
