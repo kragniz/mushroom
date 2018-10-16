@@ -13,7 +13,7 @@ TEST test_jump(void)
 	ASSERT_EQ_FMT(h, 43, "%d");
 
 	h = jump_consistent_hash(0xDEAD10CC, 1);
-	ASSERT_EQ_FMT(h, 1, "%d");
+	ASSERT_EQ_FMT(h, 0, "%d");
 
 	h = jump_consistent_hash(0xDEAD10CC, 666);
 	ASSERT_EQ_FMT(h, 361, "%d");

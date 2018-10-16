@@ -1,37 +1,30 @@
-#include <stdio.h>
 #include <string.h>
 
 #include "node.h"
 
-#include "test.h"
+#include "greatest.h"
 
-int tests_run = 0;
-
-static char *test_node()
+TEST test_node(void)
 {
 	struct mushroom_node *node = mushroom_node_new(0, "127.0.0.1");
 
-	mshrm_assert("error, id not set", node->id == 0);
-	mshrm_assert("error, address not set",
-		     strncmp(node->address, "127.0.0.1", 9) == 0);
-	return 0;
+	ASSERT_EQ_FMT(node->id, 0, "%d");
+	ASSERT_STR_EQ(node->address, "127.0.0.1");
+
+	PASS();
 }
 
-static char *all_tests()
+SUITE(node_suite)
 {
-	mshrm_run_test(test_node);
-	return 0;
+	RUN_TEST(test_node);
 }
 
-int main()
-{
-	char *result = all_tests();
-	if (result != 0) {
-		printf("%s\n", result);
-	} else {
-		printf("ALL TESTS PASSED\n");
-	}
-	printf("Tests run: %d\n", tests_run);
+GREATEST_MAIN_DEFS();
 
-	return result != 0;
+int main(int argc, char **argv)
+{
+	GREATEST_MAIN_BEGIN();
+	RUN_SUITE(node_suite);
+
+	GREATEST_MAIN_END();
 }
