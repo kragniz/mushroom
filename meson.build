@@ -17,18 +17,21 @@ add_project_arguments([
 mushroom_inc = include_directories('include')
 
 sources = files([
-    'jump.c',
-    'node.c',
-    'ring.c',
+  'jump.c',
+  'node.c',
+  'ring.c',
 ])
 
+libuv = dependency('libuv')
+
 mushroom = executable(
-	'mushroom',
-    sources + ['mushroom.c'],
-	dependencies: [
-	],
-	include_directories: [mushroom_inc],
-	install: true,
+  'mushroom',
+  sources + ['mushroom.c'],
+  dependencies: [
+    libuv,
+  ],
+  include_directories: [mushroom_inc],
+  install: true,
 )
 
 subdir('test')
