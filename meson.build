@@ -35,4 +35,3 @@ mushroom = executable(
 )
 
 subdir('test')
-test('basic', mushroom)
