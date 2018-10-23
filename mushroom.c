@@ -6,10 +6,10 @@
 
 #define PROJECT_NAME "mushroom"
 
-#define CHECK(r, msg)                                                          \
-	if (r < 0) {                                                           \
-		fprintf(stderr, "%s: %s\n", msg, uv_strerror(r));              \
-		exit(1);                                                       \
+#define CHECK(r, msg)                                                                              \
+	if (r < 0) {                                                                               \
+		fprintf(stderr, "%s: %s\n", msg, uv_strerror(r));                                  \
+		exit(1);                                                                           \
 	}
 
 static uv_loop_t *uv_loop;

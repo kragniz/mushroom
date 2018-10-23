@@ -26,16 +26,14 @@ void mushroom_ring_free(struct mushroom_ring *ring)
 	free(ring);
 }
 
-void mushroom_ring_add_node(struct mushroom_ring *ring,
-			    const struct mushroom_node *node)
+void mushroom_ring_add_node(struct mushroom_ring *ring, const struct mushroom_node *node)
 {
 	ring->node_count++;
 	ring->nodes = realloc(ring->nodes, _nodes_size(ring));
 	ring->nodes[ring->node_count - 1] = mushroom_node_copy(node);
 }
 
-struct mushroom_node *mushroom_ring_get_node(struct mushroom_ring *ring,
-					     uint32_t node_index)
+struct mushroom_node *mushroom_ring_get_node(struct mushroom_ring *ring, uint32_t node_index)
 {
 	if (node_index >= ring->node_count)
 		return NULL;
@@ -55,8 +53,7 @@ uint64_t djb2_hash(char *str)
 	return hash;
 }
 
-struct mushroom_node *mushroom_ring_node_for_key(struct mushroom_ring *ring,
-						 char *key_name)
+struct mushroom_node *mushroom_ring_node_for_key(struct mushroom_ring *ring, char *key_name)
 {
 	uint64_t key = djb2_hash(key_name);
 	uint32_t node_index = jump_consistent_hash(key, ring->node_count);
