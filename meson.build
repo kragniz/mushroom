@@ -20,16 +20,17 @@ sources = files([
   'jump.c',
   'node.c',
   'ring.c',
+  'gossip_server.c',
 ])
 
 libuv = dependency('libuv')
 
+deps = [libuv]
+
 mushroom = executable(
   'mushroom',
   sources + ['mushroom.c'],
-  dependencies: [
-    libuv,
-  ],
+  dependencies: deps,
   include_directories: [mushroom_inc],
   install: true,
 )

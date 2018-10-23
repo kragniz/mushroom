@@ -11,6 +11,7 @@ foreach test_unit: test_units
     test_unit,
     sources + [test_unit + '.c'],
     include_directories: [mushroom_inc] + [greatest],
+    dependencies: deps,
   )
 
   test(
