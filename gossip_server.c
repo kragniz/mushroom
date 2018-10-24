@@ -3,6 +3,7 @@
 #include <uv.h>
 
 #include "gossip_server.h"
+#include "log.h"
 
 static void on_recv(uv_udp_t *handle, ssize_t nread, const uv_buf_t *rcvbuf,
 		    const struct sockaddr *addr, unsigned flags)
@@ -36,7 +37,9 @@ struct mushroom_gossip_server *mushroom_gossip_server_new(uv_loop_t *loop, int p
 		exit(1);
 	}
 
-	uv_ip4_addr("0.0.0.0", port, server->addr);
+	char *addr = "0.0.0.0";
+	uv_ip4_addr(addr, port, server->addr);
+	mushroom_log_debug("listening on %s:%i", addr, port);
 
 	return server;
 }
