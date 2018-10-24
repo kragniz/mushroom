@@ -1,0 +1,16 @@
+image: archlinux
+packages:
+  - meson
+  - libuv
+sources:
+  - https://git.sr.ht/~kragniz/mushroom
+tasks:
+  - setup: |
+      cd mushroom
+      meson build
+  - build: |
+      cd mushroom
+      ninja -C build
+  - test: |
+      cd mushroom
+      ninja -C build test
