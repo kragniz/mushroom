@@ -17,10 +17,11 @@ add_project_arguments([
 mushroom_inc = include_directories('include')
 
 sources = files([
+  'gossip_server.c',
   'jump.c',
   'node.c',
   'ring.c',
-  'gossip_server.c',
+  'log.c',
 ])
 
 libuv = dependency('libuv')

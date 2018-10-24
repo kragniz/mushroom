@@ -5,21 +5,21 @@
 #include <uv.h>
 
 #include "gossip_server.h"
-
-#define PROJECT_NAME "mushroom"
+#include "log.h"
 
 int main(int argc, char **argv)
 {
+	mushroom_log_debug("starting mushroom");
+
 	uv_loop_t *uv_loop = uv_default_loop();
 
 	struct mushroom_gossip_server *gossip_server = mushroom_gossip_server_new(uv_loop, 6969);
 	mushroom_gossip_server_start(gossip_server);
 
 	if (argc != 1) {
-		printf("%s takes no arguments.\n", argv[0]);
+		mushroom_log_debug("%s takes no arguments", argv[0]);
 		return 1;
 	}
-	printf("This is project %s.\n", PROJECT_NAME);
 
 	return uv_run(uv_loop, UV_RUN_DEFAULT);
 }
