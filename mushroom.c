@@ -12,7 +12,8 @@ int main(int argc, char **argv)
 {
 	uv_loop_t *uv_loop = uv_default_loop();
 
-	mushroom_gossip_server_new(uv_loop, 6969);
+	struct mushroom_gossip_server *gossip_server = mushroom_gossip_server_new(uv_loop, 6969);
+	mushroom_gossip_server_start(gossip_server);
 
 	if (argc != 1) {
 		printf("%s takes no arguments.\n", argv[0]);
