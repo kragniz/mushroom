@@ -9,7 +9,8 @@ greatest = include_directories('deps/greatest')
 foreach test_unit: test_units
   exe = executable(
     test_unit,
-    sources + [test_unit + '.c'],
+    [test_unit + '.c'],
+    link_with: libmushroom,
     include_directories: [mushroom_inc] + [greatest],
     dependencies: deps,
   )

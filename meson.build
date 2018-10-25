@@ -25,12 +25,20 @@ sources = files([
 ])
 
 libuv = dependency('libuv')
-
 deps = [libuv]
+
+libmushroom = static_library(
+  'mushroom',
+  sources,
+  include_directories: [mushroom_inc],
+  dependencies: deps,
+)
+
 
 mushroom = executable(
   'mushroom',
-  sources + ['mushroom.c'],
+  ['mushroom.c'],
+  link_with: libmushroom,
   dependencies: deps,
   include_directories: [mushroom_inc],
   install: true,
