@@ -1,7 +1,7 @@
 #include <stdio.h>
 
-#include "ring.h"
 #include "node.h"
+#include "ring.h"
 
 #include "greatest.h"
 
