@@ -45,3 +45,8 @@ mushroom = executable(
 )
 
 subdir('test')
+
+run_target(
+  'fmt',
+  command: 'hack/clang-format.sh',
+)
