@@ -7,12 +7,18 @@ project('mushroom', 'c',
   ],
 )
 
+if meson.get_compiler('c').get_id() == 'clang'
+  extra_args = ['-Wno-newline-eof']
+else
+  extra_args = []
+endif
+
 add_project_arguments([
   '-Wshadow',
   '-Wno-unused-parameter',
   '-Wstrict-overflow',
   '-fno-strict-aliasing',
-], language: 'c')
+] + extra_args, language: 'c')
 
 mushroom_inc = include_directories('include')
 
