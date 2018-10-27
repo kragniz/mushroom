@@ -22,7 +22,6 @@ void mushroom_conf_log(struct mushroom_conf *conf)
 
 bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 {
-	int c;
 	const char *short_opt = "hg:p";
 	static struct option long_opt[] = { { "help", no_argument, NULL, 'h' },
 					    { "gossip-port", required_argument, NULL, 'g' },
@@ -30,6 +29,10 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 
 	uintmax_t num = 0;
 
+	// reset getopt
+	optind = 0;
+
+	int c;
 	while ((c = getopt_long(argc, argv, short_opt, long_opt, NULL)) != -1) {
 		switch (c) {
 		case -1:

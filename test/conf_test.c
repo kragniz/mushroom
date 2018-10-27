@@ -43,10 +43,10 @@ TEST test_conf_from_args_long(void)
 	struct mushroom_conf conf = { 0 };
 	mushroom_conf_default(&conf);
 
-	bool ok = mushroom_conf_from_args(&conf, 2, (char *[]){ "mushroom", "--gossip-port=3030" });
+	bool ok = mushroom_conf_from_args(&conf, 3, (char *[]){ "mushroom", "--gossip-port", "3030" });
 
 	ASSERT_EQ(true, ok);
-	ASSERT_EQ_FMT(1010, conf.gossip_port, "%d");
+	ASSERT_EQ_FMT(3030, conf.gossip_port, "%d");
 
 	PASS();
 }
@@ -65,11 +65,11 @@ TEST test_conf_from_args_incomplete(void)
 
 SUITE(conf_suite)
 {
-	RUN_TEST(test_default_conf);
-	RUN_TEST(test_conf_from_args_no_args);
 	RUN_TEST(test_conf_from_args);
 	RUN_TEST(test_conf_from_args_incomplete);
 	RUN_TEST(test_conf_from_args_long);
+	RUN_TEST(test_conf_from_args_no_args);
+	RUN_TEST(test_default_conf);
 }
 
 GREATEST_MAIN_DEFS();
