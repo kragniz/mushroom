@@ -13,11 +13,13 @@
 void mushroom_conf_default(struct mushroom_conf *conf)
 {
 	conf->gossip_port = 6868;
+	conf->gossip_address = "127.0.0.1";
 }
 
 void mushroom_conf_log(struct mushroom_conf *conf)
 {
 	mushroom_log_info("gossip_port=%i", conf->gossip_port);
+	mushroom_log_info("gossip_address=%s", conf->gossip_address);
 }
 
 bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
@@ -25,11 +27,12 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 	const char *short_opt = "hg:p";
 	static struct option long_opt[] = { { "help", no_argument, NULL, 'h' },
 					    { "gossip-port", required_argument, NULL, 'g' },
-					    { NULL, 0, NULL, 0 } };
+					    { "gossip-address", required_argument, NULL, 'a' },
+					    { 0 } };
 
 	uintmax_t num = 0;
 
-	// reset getopt
+	/* reset getopt */
 	optind = 0;
 
 	int c;
@@ -54,10 +57,15 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 
 			conf->gossip_port = (int)num;
 			break;
+		case 'a':
+			assert(optarg != NULL);
+			conf->gossip_address = optarg;
+			break;
 		case 'h':
 			printf("Usage: %s [OPTIONS]\n", argv[0]);
 			printf("  -h, --help            print this help and exit\n");
 			printf("  -g, --gossip-port     port the gossip server listens on\n");
+			printf("  --gossip-address      address the gossip server listens on\n");
 			return false;
 		default:
 			return false;

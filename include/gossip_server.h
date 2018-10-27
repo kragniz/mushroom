@@ -8,6 +8,7 @@ struct mushroom_gossip_server {
 	uv_udp_t *server;
 };
 
-struct mushroom_gossip_server *mushroom_gossip_server_new(uv_loop_t *loop, int port);
+struct mushroom_gossip_server *
+mushroom_gossip_server_new(uv_loop_t *loop, const char *addr, int port);
 
 void mushroom_gossip_server_start(struct mushroom_gossip_server *server);

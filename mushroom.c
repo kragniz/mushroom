@@ -23,7 +23,7 @@ int main(int argc, char **argv)
 	uv_loop_t *uv_loop = uv_default_loop();
 
 	struct mushroom_gossip_server *gossip_server =
-		mushroom_gossip_server_new(uv_loop, conf.gossip_port);
+		mushroom_gossip_server_new(uv_loop, conf.gossip_address, conf.gossip_port);
 	mushroom_gossip_server_start(gossip_server);
 
 	return uv_run(uv_loop, UV_RUN_DEFAULT);

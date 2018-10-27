@@ -8,6 +8,7 @@ TEST test_default_conf(void)
 	mushroom_conf_default(&conf);
 
 	ASSERT_EQ_FMT(6868, conf.gossip_port, "%d");
+	ASSERT_STR_EQ("127.0.0.1", conf.gossip_address);
 
 	PASS();
 }
@@ -21,6 +22,7 @@ TEST test_conf_from_args_no_args(void)
 
 	ASSERT_EQ(true, ok);
 	ASSERT_EQ_FMT(6868, conf.gossip_port, "%d");
+	ASSERT_STR_EQ("127.0.0.1", conf.gossip_address);
 
 	PASS();
 }
@@ -34,6 +36,7 @@ TEST test_conf_from_args(void)
 
 	ASSERT_EQ(true, ok);
 	ASSERT_EQ_FMT(1010, conf.gossip_port, "%d");
+	ASSERT_STR_EQ("127.0.0.1", conf.gossip_address);
 
 	PASS();
 }
@@ -43,10 +46,25 @@ TEST test_conf_from_args_long(void)
 	struct mushroom_conf conf = { 0 };
 	mushroom_conf_default(&conf);
 
-	bool ok = mushroom_conf_from_args(&conf, 3, (char *[]){ "mushroom", "--gossip-port", "3030" });
+	bool ok = mushroom_conf_from_args(&conf, 3,
+					  (char *[]){ "mushroom", "--gossip-port", "3030" });
 
 	ASSERT_EQ(true, ok);
 	ASSERT_EQ_FMT(3030, conf.gossip_port, "%d");
+
+	PASS();
+}
+
+TEST test_conf_from_args_addr(void)
+{
+	struct mushroom_conf conf = { 0 };
+	mushroom_conf_default(&conf);
+
+	bool ok = mushroom_conf_from_args(&conf, 3,
+					  (char *[]){ "mushroom", "--gossip-address", "0.0.0.0" });
+
+	ASSERT_EQ(true, ok);
+	ASSERT_STR_EQ("0.0.0.0", conf.gossip_address);
 
 	PASS();
 }
@@ -70,6 +88,7 @@ SUITE(conf_suite)
 	RUN_TEST(test_conf_from_args_long);
 	RUN_TEST(test_conf_from_args_no_args);
 	RUN_TEST(test_default_conf);
+	RUN_TEST(test_conf_from_args_addr);
 }
 
 GREATEST_MAIN_DEFS();
