@@ -57,3 +57,8 @@ run_target(
   'fmt',
   command: 'hack/clang-format.sh',
 )
+
+run_target(
+  'check',
+  command: 'hack/clang-check.sh',
+)
