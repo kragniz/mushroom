@@ -42,7 +42,7 @@ struct mushroom_gossip_server *mushroom_gossip_server_new(uv_loop_t *loop, int p
 
 	char *addr = "0.0.0.0";
 	uv_ip4_addr(addr, port, server->addr);
-	mushroom_log_debug("listening on %s:%i", addr, port);
+	mushroom_log_info("listening on %s:%i", addr, port);
 
 	return server;
 }

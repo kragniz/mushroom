@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "conf.h"
 #include "log.h"
@@ -14,7 +15,12 @@ void mushroom_conf_default(struct mushroom_conf *conf)
 	conf->gossip_port = 6868;
 }
 
-void mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
+void mushroom_conf_log(struct mushroom_conf *conf)
+{
+	mushroom_log_info("gossip_port=%i", conf->gossip_port);
+}
+
+bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 {
 	int c;
 	const char *short_opt = "hg:p";
@@ -28,20 +34,31 @@ void mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 		switch (c) {
 		case -1:
 		case 0:
-			break;
+			return false;
 		case 'g':
 			assert(optarg != NULL);
+			errno = 0;
 			num = strtoumax(optarg, NULL, 10);
-			if (num == UINTMAX_MAX && errno == ERANGE)
-				mushroom_log_error("bad value for --gossip-port");
+			if (errno != 0) {
+				mushroom_log_fatal(strerror(errno));
+				return false;
+			}
+
+			if (num <= 0) {
+				mushroom_log_fatal("invalid port number: %s", optarg);
+				return false;
+			}
+
 			conf->gossip_port = (int)num;
 			break;
 		case 'h':
 			printf("Usage: %s [OPTIONS]\n", argv[0]);
 			printf("  -h, --help            print this help and exit\n");
-			printf("  -v, --verbose         enable more verbose logging\n");
+			printf("  -g, --gossip-port     port the gossip server listens on\n");
+			return false;
 		default:
-			return;
+			return false;
 		}
 	}
+	return true;
 }

@@ -4,7 +4,7 @@
 
 #include "log.h"
 
-static const char *level_names[] = {"fatal", "error", "warning", "info", "debug"};
+static const char *level_names[] = { "fatal", "error", "warning", "info", "debug" };
 
 static int log_level = MUSHROOM_LOG_DEBUG;
 
