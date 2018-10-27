@@ -29,8 +29,8 @@ static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
 struct mushroom_gossip_server *mushroom_gossip_server_new(uv_loop_t *loop, int port)
 {
 	struct mushroom_gossip_server *server = calloc(1, sizeof(*server));
-	server->addr = calloc(1, sizeof(server->addr));
-	server->server = calloc(1, sizeof(server->server));
+	server->addr = calloc(1, sizeof(*server->addr));
+	server->server = calloc(1, sizeof(*server->server));
 
 	server->loop = loop;
 
