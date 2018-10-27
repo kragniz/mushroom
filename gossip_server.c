@@ -12,10 +12,10 @@ static void on_recv(uv_udp_t *handle,
 		    unsigned flags)
 {
 	if (nread > 0) {
-		printf("%lu\n", nread);
-		printf("%s", rcvbuf->base);
+		mushroom_log_debug("%lu", nread);
+		mushroom_log_debug("%s", rcvbuf->base);
 	}
-	printf("free  :%lu %p\n", rcvbuf->len, (void *)rcvbuf->base);
+	mushroom_log_debug("free  :%lu %p", rcvbuf->len, (void *)rcvbuf->base);
 	free(rcvbuf->base);
 }
 
@@ -23,7 +23,7 @@ static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
 {
 	buf->base = malloc(suggested_size);
 	buf->len = suggested_size;
-	printf("malloc:%lu %p\n", buf->len, (void *)buf->base);
+	mushroom_log_debug("malloc:%lu %p", buf->len, (void *)buf->base);
 }
 
 struct mushroom_gossip_server *
@@ -37,11 +37,9 @@ mushroom_gossip_server_new(uv_loop_t *loop, const char *addr, int port)
 
 	int err = uv_udp_init(server->loop, server->server);
 	if (err < 0) {
-		fprintf(stderr, "init: %s\n", uv_strerror(err));
-		exit(1);
+		mushroom_log_fatal("init: %s", uv_strerror(err));
 	}
 
-	char *addr = "0.0.0.0";
 	uv_ip4_addr(addr, port, server->addr);
 	mushroom_log_info("listening on %s:%i", addr, port);
 
@@ -52,13 +50,11 @@ void mushroom_gossip_server_start(struct mushroom_gossip_server *server)
 {
 	int err = uv_udp_bind(server->server, (const struct sockaddr *)server->addr, 0);
 	if (err < 0) {
-		fprintf(stderr, "bind: %s\n", uv_strerror(err));
-		exit(1);
+		mushroom_log_fatal("bind: %s %s", uv_strerror(err), "toot");
 	}
 
 	err = uv_udp_recv_start(server->server, on_alloc, on_recv);
 	if (err < 0) {
-		fprintf(stderr, "start: %s\n", uv_strerror(err));
-		exit(1);
+		mushroom_log_fatal("start: %s", uv_strerror(err));
 	}
 }
