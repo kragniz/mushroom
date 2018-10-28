@@ -40,8 +40,10 @@ mushroom_gossip_server_new(uv_loop_t *loop, const char *addr, int port)
 		mushroom_log_fatal("init: %s", uv_strerror(err));
 	}
 
+	mushroom_log_debug("created mushroom_gossip_server:\t%p", server);
+
 	uv_ip4_addr(addr, port, server->addr);
-	mushroom_log_info("listening on %s:%i", addr, port);
+	mushroom_log_info("gossip server listening on %s:%i", addr, port);
 
 	return server;
 }

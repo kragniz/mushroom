@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "jump.h"
+#include "log.h"
 #include "ring.h"
 
 static size_t _nodes_size(struct mushroom_ring *ring)
@@ -13,6 +14,8 @@ struct mushroom_ring *mushroom_ring_new(void)
 	struct mushroom_ring *ring = calloc(1, sizeof(*ring));
 	ring->node_count = 0;
 	ring->nodes = malloc(_nodes_size(ring));
+
+	mushroom_log_debug("created mushroom_ring: %p", ring);
 
 	return ring;
 }
