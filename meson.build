@@ -24,6 +24,7 @@ mushroom_inc = include_directories('include')
 
 sources = files([
   'conf.c',
+  'gossip_client.c',
   'gossip_server.c',
   'jump.c',
   'log.c',

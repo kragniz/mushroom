@@ -6,6 +6,7 @@
 #include <uv.h>
 
 #include "conf.h"
+#include "gossip_client.h"
 #include "gossip_server.h"
 #include "log.h"
 
@@ -25,6 +26,9 @@ int main(int argc, char **argv)
 	struct mushroom_gossip_server *gossip_server =
 		mushroom_gossip_server_new(uv_loop, conf.gossip_address, conf.gossip_port);
 	mushroom_gossip_server_start(gossip_server);
+
+	struct mushroom_gossip_client *gossip_client = mushroom_gossip_client_new(uv_loop);
+	mushroom_gossip_client_start(gossip_client);
 
 	return uv_run(uv_loop, UV_RUN_DEFAULT);
 }
