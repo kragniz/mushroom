@@ -34,7 +34,7 @@ libflatccrt = flatcc.get_variable('libflatccrt')
 flatcc_include = flatcc.get_variable('flatcc_include')
 flatcc_common = flatcc.get_variable('flatcc_common')
 
-gossip_fbs = schema_dir + '/schema/schema.fbs'
+gossip_fbs = schema_dir + '/schema/gossip.fbs'
 gossip_schema = flatcc_gen.process(gossip_fbs)
 
 sources = files([
