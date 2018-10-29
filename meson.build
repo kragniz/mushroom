@@ -4,6 +4,7 @@ project('mushroom', 'c',
     'c_std=gnu11',
     'warning_level=3',
     'werror=true',
+    'default_library=static',
   ],
 )
 
@@ -22,6 +23,20 @@ add_project_arguments([
 
 mushroom_inc = include_directories('include')
 
+libuv = dependency('libuv')
+deps = [libuv]
+
+# flatbuffers stuff
+schema_dir = meson.current_source_dir() 
+flatcc = subproject('flatcc')
+flatcc_gen = flatcc.get_variable('flatcc_gen')
+libflatccrt = flatcc.get_variable('libflatccrt')
+flatcc_include = flatcc.get_variable('flatcc_include')
+flatcc_common = flatcc.get_variable('flatcc_common')
+
+gossip_fbs = schema_dir + '/schema/schema.fbs'
+gossip_schema = flatcc_gen.process(gossip_fbs)
+
 sources = files([
   'conf.c',
   'gossip_client.c',
@@ -32,22 +47,19 @@ sources = files([
   'ring.c',
 ])
 
-libuv = dependency('libuv')
-deps = [libuv]
-
 libmushroom = static_library(
   'mushroom',
   sources,
-  include_directories: [mushroom_inc],
+  gossip_schema,
+  flatcc_common,
+  include_directories: [mushroom_inc, flatcc_include],
   dependencies: deps,
 )
-
 
 mushroom = executable(
   'mushroom',
   ['mushroom.c'],
   link_with: libmushroom,
-  dependencies: deps,
   include_directories: [mushroom_inc],
   install: true,
 )

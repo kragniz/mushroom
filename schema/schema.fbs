@@ -1,0 +1,15 @@
+namespace mushroom;
+
+table request_something {}
+
+table something { thing:uint; }
+
+union message_contents {request_something, something}
+
+table gossip_message {
+    from: uint;
+    contents: message_contents (required);
+}
+
+root_type gossip_message;
+file_identifier "MSHG";
