@@ -28,5 +28,8 @@ struct mushroom_gossip_client *mushroom_gossip_client_new(uv_loop_t *loop,
 
 void mushroom_gossip_client_start(struct mushroom_gossip_client *client)
 {
-	uv_timer_start(client->timer, gossip_event_callback, 500, 1000);
+	int err = uv_timer_start(client->timer, gossip_event_callback, 500, 1000);
+	if (err < 0) {
+		mushroom_log_fatal("timer_start: %s", uv_strerror(err));
+	}
 }
