@@ -23,9 +23,6 @@ add_project_arguments([
 
 mushroom_inc = include_directories('include')
 
-libuv = dependency('libuv')
-deps = [libuv]
-
 # flatbuffers stuff
 schema_dir = meson.current_source_dir() 
 flatcc = subproject('flatcc')
@@ -37,11 +34,13 @@ flatcc_common = flatcc.get_variable('flatcc_common')
 gossip_fbs = schema_dir + '/schema/gossip.fbs'
 gossip_schema = flatcc_gen.process(gossip_fbs)
 
-git_version_h = vcs_tag(
-  input: 'hack/version.h.meson',
-  output: 'version.h',
-  fallback: meson.project_version(),
-  command: ['git', 'describe', '--long', '--always', '--dirty', '--all'],
+git_version_h = declare_dependency(
+  sources: vcs_tag(
+      input: 'hack/version.h.meson',
+      output: 'version.h',
+      fallback: meson.project_version(),
+      command: ['git', 'describe', '--long', '--always', '--dirty', '--all'],
+  )
 )
 
 sources = files([
@@ -52,7 +51,10 @@ sources = files([
   'log.c',
   'node.c',
   'ring.c',
-]) + [git_version_h]
+])
+
+libuv = dependency('libuv')
+deps = [libuv, git_version_h]
 
 libmushroom = static_library(
   'mushroom',
@@ -69,6 +71,7 @@ mushroom = executable(
   link_with: libmushroom,
   include_directories: [mushroom_inc],
   install: true,
+  dependencies: deps,
 )
 
 subdir('test')

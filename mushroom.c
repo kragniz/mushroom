@@ -9,8 +9,8 @@
 #include "gossip_client.h"
 #include "gossip_server.h"
 #include "log.h"
-#include "version.h"
 #include "ring.h"
+#include "version.h"
 
 int main(int argc, char **argv)
 {
