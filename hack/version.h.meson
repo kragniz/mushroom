@@ -1,0 +1,3 @@
+#pragma once
+
+#define MUSHROOM_BUILD_ID "@VCS_TAG@"

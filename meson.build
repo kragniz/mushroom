@@ -37,6 +37,14 @@ flatcc_common = flatcc.get_variable('flatcc_common')
 gossip_fbs = schema_dir + '/schema/gossip.fbs'
 gossip_schema = flatcc_gen.process(gossip_fbs)
 
+git_version_h = vcs_tag(
+  input: 'hack/version.h.meson',
+  output: 'version.h',
+  fallback: meson.project_version(),
+  install: false,
+  command: ['git', 'describe', '--long', '--always', '--dirty', '--all'],
+)
+
 sources = files([
   'conf.c',
   'gossip_client.c',
@@ -45,7 +53,7 @@ sources = files([
   'log.c',
   'node.c',
   'ring.c',
-])
+]) + [git_version_h]
 
 libmushroom = static_library(
   'mushroom',

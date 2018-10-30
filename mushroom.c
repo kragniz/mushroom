@@ -9,6 +9,7 @@
 #include "gossip_client.h"
 #include "gossip_server.h"
 #include "log.h"
+#include "version.h"
 #include "ring.h"
 
 int main(int argc, char **argv)
@@ -19,9 +20,7 @@ int main(int argc, char **argv)
 	if (!ok)
 		exit(1);
 
-	mushroom_log_big_mushroom();
-
-	mushroom_log_debug("starting mushroom");
+	mushroom_log_info("🍄 " MUSHROOM_BUILD_ID);
 	mushroom_conf_log(&conf);
 
 	uv_loop_t *uv_loop = uv_default_loop();
