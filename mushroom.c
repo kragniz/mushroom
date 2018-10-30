@@ -19,6 +19,8 @@ int main(int argc, char **argv)
 	if (!ok)
 		exit(1);
 
+	mushroom_log_big_mushroom();
+
 	mushroom_log_debug("starting mushroom");
 	mushroom_conf_log(&conf);
 

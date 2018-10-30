@@ -44,3 +44,16 @@ void _mushroom_log_fatal(const char *file, int line, const char *format, ...)
 
 	exit(1);
 }
+
+void mushroom_log_big_mushroom()
+{
+	mushroom_log_info("         ___..._");
+	mushroom_log_info("    _,--'      _\"`-.");
+	mushroom_log_info("  ,'.  .   o  (_)   \\");
+	mushroom_log_info(",/:. .     . () o   .'");
+	mushroom_log_info("|;..O .      _..--'");
+	mushroom_log_info("`--:...-,-'\"\"\\");
+	mushroom_log_info("        |:.   `.");
+	mushroom_log_info("         l;.   l");
+	mushroom_log_info("         |: _' |");
+}

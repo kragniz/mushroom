@@ -24,3 +24,4 @@ enum mushroom_log_level {
 
 void mushroom_log(int level, const char *file, int line, const char *format, ...);
 void _mushroom_log_fatal(const char *file, int line, const char *format, ...);
+void mushroom_log_big_mushroom();
