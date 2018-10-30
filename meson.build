@@ -41,7 +41,6 @@ git_version_h = vcs_tag(
   input: 'hack/version.h.meson',
   output: 'version.h',
   fallback: meson.project_version(),
-  install: false,
   command: ['git', 'describe', '--long', '--always', '--dirty', '--all'],
 )
 
