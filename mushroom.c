@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 	if (!ok)
 		exit(1);
 
-	mushroom_log_info("🍄 " MUSHROOM_BUILD_ID);
+	mushroom_log_info("🍄 %s", MUSHROOM_BUILD_ID);
 	mushroom_conf_log(&conf);
 
 	uv_loop_t *uv_loop = uv_default_loop();
