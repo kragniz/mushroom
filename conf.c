@@ -10,6 +10,11 @@
 #include "conf.h"
 #include "log.h"
 
+enum opts {
+	OPT_GOSSIP_PORT = 255,
+	OPT_GOSSIP_ADDRESS,
+};
+
 void mushroom_conf_default(struct mushroom_conf *conf)
 {
 	conf->gossip_port = 6868;
@@ -25,10 +30,12 @@ void mushroom_conf_log(struct mushroom_conf *conf)
 bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 {
 	const char *short_opt = "hg:p";
-	static struct option long_opt[] = { { "help", no_argument, NULL, 'h' },
-					    { "gossip-port", required_argument, NULL, 'g' },
-					    { "gossip-address", required_argument, NULL, 'a' },
-					    { 0 } };
+	static struct option long_opt[] = {
+		{ "help", no_argument, NULL, 'h' },
+		{ "gossip-port", required_argument, NULL, OPT_GOSSIP_PORT },
+		{ "gossip-address", required_argument, NULL, OPT_GOSSIP_ADDRESS },
+		{ 0 }
+	};
 
 	uintmax_t num = 0;
 
@@ -41,7 +48,7 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 		case -1:
 		case 0:
 			return false;
-		case 'g':
+		case OPT_GOSSIP_PORT:
 			assert(optarg != NULL);
 			errno = 0;
 			num = strtoumax(optarg, NULL, 10);
@@ -57,14 +64,14 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 
 			conf->gossip_port = (int)num;
 			break;
-		case 'a':
+		case OPT_GOSSIP_ADDRESS:
 			assert(optarg != NULL);
 			conf->gossip_address = optarg;
 			break;
 		case 'h':
 			printf("Usage: %s [OPTIONS]\n", argv[0]);
 			printf("  -h, --help            print this help and exit\n");
-			printf("  -g, --gossip-port     port the gossip server listens on\n");
+			printf("  --gossip-port     port the gossip server listens on\n");
 			printf("  --gossip-address      address the gossip server listens on\n");
 			return false;
 		default:
