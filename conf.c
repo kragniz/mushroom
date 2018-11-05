@@ -17,12 +17,14 @@ enum opts {
 
 void mushroom_conf_default(struct mushroom_conf *conf)
 {
+	conf->action = MUSHROOM_GROW;
 	conf->gossip_port = 6868;
 	conf->gossip_address = "127.0.0.1";
 }
 
 void mushroom_conf_log(struct mushroom_conf *conf)
 {
+	mushroom_log_info("action=%i", conf->action);
 	mushroom_log_info("gossip_port=%i", conf->gossip_port);
 	mushroom_log_info("gossip_address=%s", conf->gossip_address);
 }
@@ -78,5 +80,17 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 			return false;
 		}
 	}
+
+	char **positionals = &argv[optind];
+	for (; *positionals; positionals++) {
+		if (strncmp(*positionals, "spore", strlen(*positionals)) == 0) {
+			conf->action = MUSHROOM_SPORE;
+			break;
+		} else if (strncmp(*positionals, "grow", strlen(*positionals)) == 0) {
+			conf->action = MUSHROOM_GROW;
+			break;
+		}
+	}
+
 	return true;
 }

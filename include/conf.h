@@ -2,7 +2,13 @@
 
 #include <stdbool.h>
 
+enum mushroom_node_action {
+	MUSHROOM_GROW,
+	MUSHROOM_SPORE,
+};
+
 struct mushroom_conf {
+	enum mushroom_node_action action;
 	int gossip_port;
 	char *gossip_address;
 };
