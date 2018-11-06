@@ -24,9 +24,21 @@ void mushroom_conf_default(struct mushroom_conf *conf)
 
 void mushroom_conf_log(struct mushroom_conf *conf)
 {
-	mushroom_log_info("mode=%i", conf->mode);
-	mushroom_log_info("gossip_port=%i", conf->gossip_port);
-	mushroom_log_info("gossip_address=%s", conf->gossip_address);
+	char *mode;
+	switch (conf->mode) {
+	case MUSHROOM_GROW:
+		mode = "grow";
+		break;
+	case MUSHROOM_SPORE:
+		mode = "spore";
+		break;
+	default:
+		mode = "unknown";
+		break;
+	}
+	mushroom_log_info("mode: %s", mode);
+	mushroom_log_info("gossip_port: %i", conf->gossip_port);
+	mushroom_log_info("gossip_address: %s", conf->gossip_address);
 }
 
 bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
