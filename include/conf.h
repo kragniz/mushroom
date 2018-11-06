@@ -2,13 +2,13 @@
 
 #include <stdbool.h>
 
-enum mushroom_node_action {
+enum mushroom_node_mode {
 	MUSHROOM_GROW,
 	MUSHROOM_SPORE,
 };
 
 struct mushroom_conf {
-	enum mushroom_node_action action;
+	enum mushroom_node_mode mode;
 	int gossip_port;
 	char *gossip_address;
 };

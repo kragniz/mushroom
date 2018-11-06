@@ -17,21 +17,21 @@ enum opts {
 
 void mushroom_conf_default(struct mushroom_conf *conf)
 {
-	conf->action = MUSHROOM_GROW;
+	conf->mode = MUSHROOM_GROW;
 	conf->gossip_port = 6868;
 	conf->gossip_address = "127.0.0.1";
 }
 
 void mushroom_conf_log(struct mushroom_conf *conf)
 {
-	mushroom_log_info("action=%i", conf->action);
+	mushroom_log_info("mode=%i", conf->mode);
 	mushroom_log_info("gossip_port=%i", conf->gossip_port);
 	mushroom_log_info("gossip_address=%s", conf->gossip_address);
 }
 
 bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 {
-	const char *short_opt = "hg:p";
+	const char *short_opt = "h:p";
 	static struct option long_opt[] = {
 		{ "help", no_argument, NULL, 'h' },
 		{ "gossip-port", required_argument, NULL, OPT_GOSSIP_PORT },
@@ -84,10 +84,13 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 	char **positionals = &argv[optind];
 	for (; *positionals; positionals++) {
 		if (strncmp(*positionals, "spore", strlen(*positionals)) == 0) {
-			conf->action = MUSHROOM_SPORE;
+			conf->mode = MUSHROOM_SPORE;
 			break;
 		} else if (strncmp(*positionals, "grow", strlen(*positionals)) == 0) {
-			conf->action = MUSHROOM_GROW;
+			conf->mode = MUSHROOM_GROW;
+			break;
+		} else {
+			mushroom_log_fatal("invalid node mode: %s", *positionals);
 			break;
 		}
 	}
