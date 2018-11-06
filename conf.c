@@ -103,11 +103,10 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 				conf->mode = MUSHROOM_GROW;
 				break;
 			} else {
-				mushroom_log_fatal("invalid node mode: %s", arg);
-				break;
+				mushroom_log_error("invalid node mode: %s", arg);
+				return false;
 			}
 		}
-		printf("\n");
 	}
 
 	return true;
