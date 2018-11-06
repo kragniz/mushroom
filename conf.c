@@ -93,18 +93,21 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 		}
 	}
 
-	char **positionals = &argv[optind];
-	for (; *positionals; positionals++) {
-		if (strncmp(*positionals, "spore", strlen(*positionals)) == 0) {
-			conf->mode = MUSHROOM_SPORE;
-			break;
-		} else if (strncmp(*positionals, "grow", strlen(*positionals)) == 0) {
-			conf->mode = MUSHROOM_GROW;
-			break;
-		} else {
-			mushroom_log_fatal("invalid node mode: %s", *positionals);
-			break;
+	if (optind < argc) {
+		while (optind < argc) {
+			char *arg = argv[optind++];
+			if (strncmp(arg, "spore", strlen(arg)) == 0) {
+				conf->mode = MUSHROOM_SPORE;
+				break;
+			} else if (strncmp(arg, "grow", strlen(arg)) == 0) {
+				conf->mode = MUSHROOM_GROW;
+				break;
+			} else {
+				mushroom_log_fatal("invalid node mode: %s", arg);
+				break;
+			}
 		}
+		printf("\n");
 	}
 
 	return true;
