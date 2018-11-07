@@ -11,6 +11,9 @@ struct mushroom_conf {
 	enum mushroom_node_mode mode;
 	int gossip_port;
 	char *gossip_address;
+
+	int initial_node_port;
+	char *initial_node_address;
 };
 
 void mushroom_conf_default(struct mushroom_conf *conf);

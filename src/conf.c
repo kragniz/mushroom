@@ -13,6 +13,8 @@
 enum opts {
 	OPT_GOSSIP_PORT = 255,
 	OPT_GOSSIP_ADDRESS,
+	OPT_INITIAL_NODE_ADDRESS,
+	OPT_INITIAL_NODE_PORT,
 };
 
 void mushroom_conf_default(struct mushroom_conf *conf)
@@ -20,6 +22,9 @@ void mushroom_conf_default(struct mushroom_conf *conf)
 	conf->mode = MUSHROOM_GROW;
 	conf->gossip_port = 6868;
 	conf->gossip_address = "127.0.0.1";
+
+	conf->initial_node_port = 6767;
+	conf->initial_node_address = "127.0.0.1";
 }
 
 void mushroom_conf_log(struct mushroom_conf *conf)
@@ -39,15 +44,19 @@ void mushroom_conf_log(struct mushroom_conf *conf)
 	mushroom_log_info("mode: %s", mode);
 	mushroom_log_info("gossip_port: %i", conf->gossip_port);
 	mushroom_log_info("gossip_address: %s", conf->gossip_address);
+	mushroom_log_info("initial_node_port: %i", conf->initial_node_port);
+	mushroom_log_info("initial_node_address: %s", conf->initial_node_address);
 }
 
 bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 {
-	const char *short_opt = "h:p";
+	const char *short_opt = "h";
 	static struct option long_opt[] = {
 		{ "help", no_argument, NULL, 'h' },
 		{ "gossip-port", required_argument, NULL, OPT_GOSSIP_PORT },
 		{ "gossip-address", required_argument, NULL, OPT_GOSSIP_ADDRESS },
+		{ "initial-node-port", required_argument, NULL, OPT_INITIAL_NODE_PORT },
+		{ "initial-node-address", required_argument, NULL, OPT_INITIAL_NODE_ADDRESS },
 		{ 0 }
 	};
 
@@ -81,6 +90,26 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 		case OPT_GOSSIP_ADDRESS:
 			assert(optarg != NULL);
 			conf->gossip_address = optarg;
+			break;
+		case OPT_INITIAL_NODE_PORT:
+			assert(optarg != NULL);
+			errno = 0;
+			num = strtoumax(optarg, NULL, 10);
+			if (errno != 0) {
+				mushroom_log_fatal(strerror(errno));
+				return false;
+			}
+
+			if (num <= 0) {
+				mushroom_log_fatal("invalid port number: %s", optarg);
+				return false;
+			}
+
+			conf->initial_node_port = (int)num;
+			break;
+		case OPT_INITIAL_NODE_ADDRESS:
+			assert(optarg != NULL);
+			conf->initial_node_address = optarg;
 			break;
 		case 'h':
 			printf("Usage: %s [OPTIONS]\n", argv[0]);
