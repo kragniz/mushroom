@@ -43,27 +43,10 @@ git_version_h = declare_dependency(
   )
 )
 
-sources = files([
-  'conf.c',
-  'gossip_client.c',
-  'gossip_server.c',
-  'jump.c',
-  'log.c',
-  'node.c',
-  'ring.c',
-])
-
 libuv = dependency('libuv')
 deps = [libuv, git_version_h]
 
-libmushroom = static_library(
-  'mushroom',
-  sources,
-  gossip_schema,
-  flatcc_common,
-  include_directories: [mushroom_inc, flatcc_include],
-  dependencies: deps,
-)
+subdir('src')
 
 mushroom = executable(
   'mushroom',
