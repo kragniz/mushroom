@@ -50,7 +50,7 @@ subdir('src')
 
 mushroom = executable(
   'mushroom',
-  ['mushroom.c'],
+  ['src/mushroom.c'],
   link_with: libmushroom,
   include_directories: [mushroom_inc],
   install: true,

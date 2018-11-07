@@ -10,7 +10,7 @@ enum mushroom_log_level {
 	MUSHROOM_LOG_DEBUG
 };
 
-#define _prefix 3
+#define _prefix 7
 
 #define mushroom_log_debug(...)                                                                    \
 	mushroom_log(MUSHROOM_LOG_DEBUG, __FILE__ + _prefix, __LINE__, __VA_ARGS__)
