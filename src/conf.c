@@ -17,6 +17,22 @@ enum opts {
 	OPT_INITIAL_NODE_PORT,
 };
 
+static int parse_port_option(const char *optarg)
+{
+	assert(optarg != NULL);
+	errno = 0;
+	uintmax_t num = strtoumax(optarg, NULL, 10);
+	if (errno != 0) {
+		mushroom_log_fatal(strerror(errno));
+	}
+
+	if (num <= 0) {
+		mushroom_log_fatal("invalid port number: %s", optarg);
+	}
+
+	return (int)num;
+}
+
 void mushroom_conf_default(struct mushroom_conf *conf)
 {
 	conf->mode = MUSHROOM_GROW;
@@ -60,8 +76,6 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 		{ 0 }
 	};
 
-	uintmax_t num = 0;
-
 	/* reset getopt */
 	optind = 0;
 
@@ -72,40 +86,14 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 		case 0:
 			return false;
 		case OPT_GOSSIP_PORT:
-			assert(optarg != NULL);
-			errno = 0;
-			num = strtoumax(optarg, NULL, 10);
-			if (errno != 0) {
-				mushroom_log_fatal(strerror(errno));
-				return false;
-			}
-
-			if (num <= 0) {
-				mushroom_log_fatal("invalid port number: %s", optarg);
-				return false;
-			}
-
-			conf->gossip_port = (int)num;
+			conf->gossip_port = parse_port_option(optarg);
 			break;
 		case OPT_GOSSIP_ADDRESS:
 			assert(optarg != NULL);
 			conf->gossip_address = optarg;
 			break;
 		case OPT_INITIAL_NODE_PORT:
-			assert(optarg != NULL);
-			errno = 0;
-			num = strtoumax(optarg, NULL, 10);
-			if (errno != 0) {
-				mushroom_log_fatal(strerror(errno));
-				return false;
-			}
-
-			if (num <= 0) {
-				mushroom_log_fatal("invalid port number: %s", optarg);
-				return false;
-			}
-
-			conf->initial_node_port = (int)num;
+			conf->initial_node_port = parse_port_option(optarg);
 			break;
 		case OPT_INITIAL_NODE_ADDRESS:
 			assert(optarg != NULL);
