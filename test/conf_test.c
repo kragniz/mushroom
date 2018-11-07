@@ -74,8 +74,7 @@ TEST test_conf_mode(void)
 	struct mushroom_conf conf = { 0 };
 	mushroom_conf_default(&conf);
 
-	bool ok = mushroom_conf_from_args(&conf, 2,
-					  (char *[]){ "mushroom", "spore" });
+	bool ok = mushroom_conf_from_args(&conf, 2, (char *[]){ "mushroom", "spore" });
 
 	ASSERT_EQ(true, ok);
 	ASSERT_EQ(MUSHROOM_SPORE, conf.mode);
@@ -83,14 +82,12 @@ TEST test_conf_mode(void)
 	PASS();
 }
 
-
 TEST test_conf_mode_bad(void)
 {
 	struct mushroom_conf conf = { 0 };
 	mushroom_conf_default(&conf);
 
-	bool ok = mushroom_conf_from_args(&conf, 2,
-					  (char *[]){ "mushroom", "not-a-real-mode" });
+	bool ok = mushroom_conf_from_args(&conf, 2, (char *[]){ "mushroom", "not-a-real-mode" });
 
 	ASSERT_EQ(false, ok);
 	ASSERT_EQ(MUSHROOM_GROW, conf.mode);
