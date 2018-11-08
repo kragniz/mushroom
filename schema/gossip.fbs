@@ -1,10 +1,19 @@
 namespace mushroom;
 
-table request_something {}
+table join_request {}
 
-table something { thing:uint; }
+table join_response {}
 
-union message_contents {request_something, something}
+table something_request {}
+
+table something_response { thing:uint; }
+
+union message_contents {
+    something_request,
+    something_response,
+    join_request,
+    join_response,
+}
 
 table gossip_message {
     from: uint;
