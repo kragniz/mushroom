@@ -73,4 +73,5 @@ run_target(
 run_target(
   'check',
   command: 'hack/clang-check.sh',
+  depends: mushroom,
 )
