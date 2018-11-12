@@ -11,8 +11,7 @@ sources = files([
 libmushroom = static_library(
   'mushroom',
   sources,
-  gossip_schema,
-  flatcc_common,
+  flatcc_all,
   include_directories: [mushroom_inc, flatcc_include],
   dependencies: deps,
 )
