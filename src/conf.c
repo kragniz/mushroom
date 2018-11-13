@@ -40,7 +40,7 @@ void mushroom_conf_default(struct mushroom_conf *conf)
 	conf->gossip_address = "127.0.0.1";
 
 	conf->initial_node_port = 6767;
-	conf->initial_node_address = "127.0.0.1";
+	conf->initial_node_address = NULL;
 }
 
 void mushroom_conf_log(struct mushroom_conf *conf)

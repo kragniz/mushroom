@@ -30,6 +30,9 @@ int main(int argc, char **argv)
 	mushroom_gossip_server_start(gossip_server);
 
 	struct mushroom_ring *ring = mushroom_ring_new();
+	if (conf.mode == MUSHROOM_GROW && conf.initial_node_address != NULL)
+		mushroom_ring_add_node(ring, mushroom_node_new(0, conf.initial_node_address,
+							       conf.initial_node_port));
 
 	struct mushroom_gossip_client *gossip_client = mushroom_gossip_client_new(uv_loop, ring);
 	mushroom_gossip_client_start(gossip_client);
