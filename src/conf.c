@@ -101,9 +101,11 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 			break;
 		case 'h':
 			printf("Usage: %s [OPTIONS]\n", argv[0]);
-			printf("  -h, --help        print this help and exit\n");
-			printf("  --gossip-port     port the gossip server listens on\n");
-			printf("  --gossip-address  address the gossip server listens on\n");
+			printf("  -h, --help              print this help and exit\n");
+			printf("  --gossip-port           port the gossip server listens on\n");
+			printf("  --gossip-address        address the gossip server listens on\n");
+			printf("  --initial-node-port     port the initial node gossip server listens on\n");
+			printf("  --initial-node-address  address the initial node gossip server listens on\n");
 			return false;
 		default:
 			return false;
