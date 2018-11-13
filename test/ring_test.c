@@ -13,7 +13,7 @@ TEST test_ring(void)
 	ASSERT_EQ_FMT(ring->node_count, 0, "%i");
 
 	/* add a node to the ring */
-	struct mushroom_node *node1 = mushroom_node_new(0, "127.0.0.1");
+	struct mushroom_node *node1 = mushroom_node_new(0, "127.0.0.1", 6969);
 	mushroom_ring_add_node(ring, node1);
 
 	mushroom_node_free(node1);
@@ -28,7 +28,7 @@ TEST test_ring(void)
 	ASSERT_EQ(invalid_node, NULL);
 
 	/* add a second node */
-	struct mushroom_node *node2 = mushroom_node_new(1, "127.0.0.2");
+	struct mushroom_node *node2 = mushroom_node_new(1, "127.0.0.2", 6969);
 	mushroom_ring_add_node(ring, node2);
 
 	mushroom_node_free(node2);
@@ -42,7 +42,7 @@ TEST test_ring(void)
 	for (int i = 2; i < 24; i++) {
 		char node_address[24];
 		sprintf(node_address, "127.0.0.%i", i);
-		struct mushroom_node *n = mushroom_node_new(i, node_address);
+		struct mushroom_node *n = mushroom_node_new(i, node_address, 6969);
 		mushroom_ring_add_node(ring, n);
 		mushroom_node_free(n);
 	}
