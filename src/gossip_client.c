@@ -15,6 +15,11 @@ static void gossip_event_callback(uv_timer_t *handle)
 	if (client->ring->node_count <= 0) {
 		mushroom_log_debug("no nodes to gossip with");
 	}
+
+	mushroom_join_request_ref_t join_request = mushroom_join_request_create(client->builder);
+	mushroom_message_contents_union_ref_t contents =
+		mushroom_message_contents_as_join_request(join_request);
+	mushroom_gossip_message_create_as_root(client->builder, 7070, contents);
 }
 
 struct mushroom_gossip_client *mushroom_gossip_client_new(uv_loop_t *loop,
