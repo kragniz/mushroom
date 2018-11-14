@@ -75,3 +75,9 @@ run_target(
   command: 'hack/clang-check.sh',
   depends: mushroom,
 )
+
+run_target(
+  'cluster',
+  command: ['hack/cluster', mushroom],
+  depends: mushroom,
+)

@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+
+import sys
+from subprocess import Popen
+
+def mushroom_cmd(mushroom, mode=None, gossip_port=None, gossip_address=None,
+        initial_node_port=None, initial_node_address=None):
+    cmd = [mushroom]
+
+    if gossip_port is not None:
+        cmd.append(f'--gossip-port={gossip_port}')
+    if gossip_address is not None:
+        cmd.append(f'--gossip-address={gossip_address}')
+    if initial_node_port is not None:
+        cmd.append(f'--initial-node-port={initial_node_port}')
+    if initial_node_address is not None:
+        cmd.append(f'--initial-node-address={initial_node_address}')
+
+    if mode is not None:
+        cmd.append(mode)
+    return cmd
+
+def generate_cmds(mushroom):
+    initial_node_port = 7000
+    cmds = [mushroom_cmd(mushroom, mode='spore', gossip_port=initial_node_port)]
+
+    for i in range(2):
+        cmds.append(mushroom_cmd(mushroom, gossip_port=initial_node_port+700+i,
+            initial_node_port=initial_node_port,
+            initial_node_address='127.0.0.1'))
+
+    return cmds
+
+def main(mushroom):
+    commands = generate_cmds(mushroom)
+    print('going to run a cluster with:')
+    for c in commands:
+        print(' '.join(c))
+
+    procs = [Popen(i) for i in commands]
+    for p in procs:
+        p.wait()
+
+if __name__ == '__main__':
+    mushroom = sys.argv[1]
+
+    main(mushroom)
