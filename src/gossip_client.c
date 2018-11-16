@@ -18,8 +18,8 @@ void on_send(uv_udp_send_t *req, int status)
 {
 	if (status) {
 		mushroom_log_error("Send error %s\n", uv_strerror(status));
-		return;
 	}
+	free(req);
 }
 
 static void gossip_event_callback(uv_timer_t *handle)
