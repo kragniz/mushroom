@@ -19,6 +19,7 @@ void on_send(uv_udp_send_t *req, int status)
 	if (status) {
 		mushroom_log_error("Send error %s\n", uv_strerror(status));
 	}
+	free(req->data);
 	free(req);
 }
 
@@ -45,6 +46,7 @@ static void gossip_event_callback(uv_timer_t *handle)
 		    &send_addr);
 
 	uv_udp_send_t *send_req = malloc(sizeof(*send_req));
+	send_req->data = (void *)gossip_msg.base;
 	uv_udp_send(send_req, send_socket, &gossip_msg, 1, (const struct sockaddr *)&send_addr,
 		    on_send);
 
