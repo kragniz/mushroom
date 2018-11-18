@@ -54,6 +54,13 @@ static void gossip_event_callback(uv_timer_t *handle)
 	mushroom_message_contents_union_ref_t contents =
 		mushroom_message_contents_as_join_request(join_request);
 	mushroom_gossip_message_create_as_root(client->builder, 7070, contents);
+
+	size_t size = flatcc_builder_get_buffer_size(client->builder);
+	if (size >= 256)
+		mushroom_log_error("flatcc buffer too big: %d", size);
+	flatcc_builder_copy_buffer(client->builder, gossip_msg.base, size);
+
+	flatcc_builder_reset(client->builder);
 }
 
 struct mushroom_gossip_client *mushroom_gossip_client_new(uv_loop_t *loop,
