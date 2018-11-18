@@ -20,6 +20,9 @@ static void on_recv(uv_udp_t *handle,
 		} else {
 			uint32_t from = mushroom_gossip_message_from(msg);
 			mushroom_log_debug("gossip message was from %d", from);
+			if (mushroom_gossip_message_contents_type(msg) ==
+			    mushroom_message_contents_join_request)
+				mushroom_log_debug("gossip message was of type join");
 		}
 	}
 	free(rcvbuf->base);
