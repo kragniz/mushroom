@@ -2,6 +2,7 @@
 
 #include <uv.h>
 
+#include "gossip_reader.h"
 #include "gossip_server.h"
 #include "log.h"
 
@@ -11,11 +12,16 @@ static void on_recv(uv_udp_t *handle,
 		    const struct sockaddr *addr,
 		    unsigned flags)
 {
+	mushroom_log_debug("received gossip message");
 	if (nread > 0) {
-		mushroom_log_debug("%lu", nread);
-		mushroom_log_debug("%s", rcvbuf->base);
+		mushroom_gossip_message_table_t msg = mushroom_gossip_message_as_root(rcvbuf->base);
+		if (msg == NULL) {
+			mushroom_log_error("gossip message couldn't be parsed");
+		} else {
+			uint32_t from = mushroom_gossip_message_from(msg);
+			mushroom_log_debug("gossip message was from %d", from);
+		}
 	}
-	mushroom_log_debug("free  :%lu %p", rcvbuf->len, (void *)rcvbuf->base);
 	free(rcvbuf->base);
 }
 

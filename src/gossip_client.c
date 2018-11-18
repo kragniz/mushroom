@@ -45,11 +45,6 @@ static void gossip_event_callback(uv_timer_t *handle)
 	uv_ip4_addr(client->ring->nodes[0]->address, client->ring->nodes[0]->gossip_port,
 		    &send_addr);
 
-	uv_udp_send_t *send_req = malloc(sizeof(*send_req));
-	send_req->data = (void *)gossip_msg.base;
-	uv_udp_send(send_req, send_socket, &gossip_msg, 1, (const struct sockaddr *)&send_addr,
-		    on_send);
-
 	mushroom_join_request_ref_t join_request = mushroom_join_request_create(client->builder);
 	mushroom_message_contents_union_ref_t contents =
 		mushroom_message_contents_as_join_request(join_request);
@@ -59,6 +54,11 @@ static void gossip_event_callback(uv_timer_t *handle)
 	if (size >= 256)
 		mushroom_log_error("flatcc buffer too big: %d", size);
 	flatcc_builder_copy_buffer(client->builder, gossip_msg.base, size);
+
+	uv_udp_send_t *send_req = malloc(sizeof(*send_req));
+	send_req->data = (void *)gossip_msg.base;
+	uv_udp_send(send_req, send_socket, &gossip_msg, 1, (const struct sockaddr *)&send_addr,
+		    on_send);
 
 	flatcc_builder_reset(client->builder);
 }
