@@ -6,26 +6,30 @@
 #include "gossip_server.h"
 #include "log.h"
 
+static void handle_gossip_message(mushroom_gossip_message_table_t *msg)
+{
+	uint32_t from = mushroom_gossip_message_from(*msg);
+	mushroom_log_debug("gossip message was from %d", from);
+	if (mushroom_gossip_message_contents_type(*msg) == mushroom_message_contents_join_request)
+		mushroom_log_debug("gossip message was of type join");
+}
+
 static void on_recv(uv_udp_t *handle,
 		    ssize_t nread,
-		    const uv_buf_t *rcvbuf,
+		    const uv_buf_t *buf,
 		    const struct sockaddr *addr,
 		    unsigned flags)
 {
 	mushroom_log_debug("received gossip message");
 	if (nread > 0) {
-		mushroom_gossip_message_table_t msg = mushroom_gossip_message_as_root(rcvbuf->base);
+		mushroom_gossip_message_table_t msg = mushroom_gossip_message_as_root(buf->base);
 		if (msg == NULL) {
 			mushroom_log_error("gossip message couldn't be parsed");
 		} else {
-			uint32_t from = mushroom_gossip_message_from(msg);
-			mushroom_log_debug("gossip message was from %d", from);
-			if (mushroom_gossip_message_contents_type(msg) ==
-			    mushroom_message_contents_join_request)
-				mushroom_log_debug("gossip message was of type join");
+			handle_gossip_message(&msg);
 		}
 	}
-	free(rcvbuf->base);
+	free(buf->base);
 }
 
 static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
