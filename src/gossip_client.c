@@ -11,7 +11,6 @@ static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
 {
 	buf->base = malloc(suggested_size);
 	buf->len = suggested_size;
-	mushroom_log_debug("malloc:%lu %p", buf->len, (void *)buf->base);
 }
 
 void on_send(uv_udp_send_t *req, int status)
