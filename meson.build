@@ -44,7 +44,9 @@ git_version_h = declare_dependency(
 )
 
 libuv = dependency('libuv')
-deps = [libuv,  git_version_h]
+http_parser = subproject('http-parser')
+libhttp_parser = http_parser.get_variable('http_parser')
+deps = [libuv, git_version_h]
 
 flatcc_all = [
   flatcc_common,
@@ -57,7 +59,7 @@ mushroom = executable(
   'mushroom',
   ['src/mushroom.c'],
   flatcc_all,
-  link_with: [libmushroom, libflatccrt],
+  link_with: [libmushroom, libflatccrt, libhttp_parser],
   include_directories: [mushroom_inc, flatcc_include],
   install: true,
   dependencies: deps,
