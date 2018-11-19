@@ -1,4 +1,5 @@
 sources = files([
+  'api.c',
   'conf.c',
   'gossip_client.c',
   'gossip_server.c',
