@@ -4,6 +4,7 @@
 
 #include "gossip_builder.h"
 #include "gossip_client.h"
+#include "gossip_json_printer.h"
 #include "log.h"
 #include "ring.h"
 
@@ -53,6 +54,17 @@ static void gossip_event_callback(uv_timer_t *handle)
 	if (size >= 256)
 		mushroom_log_error("flatcc buffer too big: %d", size);
 	flatcc_builder_copy_buffer(client->builder, gossip_msg.base, size);
+
+	char buf[1024];
+	flatcc_json_printer_t *ctx = malloc(sizeof(*ctx));
+	flatcc_json_printer_init_buffer(ctx, buf, 1024);
+	gossip_print_json(ctx, gossip_msg.base, size);
+	flatcc_json_printer_flush(ctx);
+	if (flatcc_json_printer_get_error(ctx)) {
+		mushroom_log_error("could not print json");
+	}
+	free(ctx);
+	mushroom_log_debug("sending gossip message: %s", buf);
 
 	uv_udp_send_t *send_req = malloc(sizeof(*send_req));
 	send_req->data = (void *)gossip_msg.base;

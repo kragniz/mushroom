@@ -26,7 +26,7 @@ mushroom_inc = include_directories('include')
 # flatbuffers stuff
 schema_dir = meson.current_source_dir() 
 flatcc = subproject('flatcc')
-flatcc_gen = flatcc.get_variable('flatcc_gen')
+flatcc_gen = flatcc.get_variable('flatcc_json_gen')
 libflatccrt = flatcc.get_variable('libflatccrt')
 flatcc_include = flatcc.get_variable('flatcc_include')
 flatcc_common = flatcc.get_variable('flatcc_common')
