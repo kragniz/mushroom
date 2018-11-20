@@ -8,6 +8,9 @@ A terrible distributed database that doesn't distribute or store data yet.
 build
 -----
 
+    git clone --recursive https://git.sr.ht/~kragniz/mushroom
+
+
+    cd mushroom
     meson build
     ninja -C build
-
