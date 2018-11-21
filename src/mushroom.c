@@ -5,6 +5,7 @@
 
 #include <uv.h>
 
+#include "api.h"
 #include "conf.h"
 #include "gossip_client.h"
 #include "gossip_server.h"
@@ -36,6 +37,9 @@ int main(int argc, char **argv)
 
 	struct mushroom_gossip_client *gossip_client = mushroom_gossip_client_new(uv_loop, ring);
 	mushroom_gossip_client_start(gossip_client);
+
+	struct mushroom_api *api = mushroom_api_new(uv_loop, "127.0.0.1", 9999);
+	mushroom_api_start(api);
 
 	return uv_run(uv_loop, UV_RUN_DEFAULT);
 }
