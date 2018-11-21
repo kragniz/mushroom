@@ -1,10 +1,21 @@
 namespace mushroom_api;
 
-table get {}
+table key {
+    space: string;
+    name: string;
+}
 
-table put {}
+table get {
+    key:key;
+}
 
-table delete {}
+table put {
+    key:key;
+}
+
+table delete {
+    key:key;
+}
 
 union action_contents {
     get,
