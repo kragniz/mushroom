@@ -1,0 +1,20 @@
+namespace mushroom_api;
+
+table get {}
+
+table put {}
+
+table delete {}
+
+union action_contents {
+    get,
+    put,
+    delete,
+}
+
+table message {
+    action: action_contents (required);
+}
+
+root_type message;
+file_identifier "MSHA";

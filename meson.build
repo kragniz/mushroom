@@ -34,6 +34,9 @@ flatcc_common = flatcc.get_variable('flatcc_common')
 gossip_fbs = schema_dir + '/schema/gossip.fbs'
 gossip_schema = flatcc_gen.process(gossip_fbs)
 
+api_fbs = schema_dir + '/schema/api.fbs'
+api_schema = flatcc_gen.process(api_fbs)
+
 git_version_h = declare_dependency(
   sources: vcs_tag(
       input: 'hack/version.h.meson',
@@ -51,6 +54,7 @@ deps = [libuv, git_version_h]
 flatcc_all = [
   flatcc_common,
   gossip_schema,
+  api_schema,
 ]
 
 subdir('src')
