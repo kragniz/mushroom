@@ -6,7 +6,7 @@
 struct mushroom_api {
 	uv_loop_t *loop;
 	struct sockaddr_in *addr;
-	http_parser parser;
+	uv_tcp_t *server;
 };
 
 struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int port);
