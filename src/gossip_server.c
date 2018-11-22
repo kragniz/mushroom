@@ -64,7 +64,7 @@ void mushroom_gossip_server_start(struct mushroom_gossip_server *server)
 {
 	int err = uv_udp_bind(server->server, (const struct sockaddr *)server->addr, 0);
 	if (err < 0) {
-		mushroom_log_fatal("bind: %s %s", uv_strerror(err), "toot");
+		mushroom_log_fatal("bind: %s", uv_strerror(err));
 	}
 
 	err = uv_udp_recv_start(server->server, on_alloc, on_recv);
