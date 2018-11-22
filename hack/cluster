@@ -20,19 +20,19 @@ def mushroom_cmd(mushroom, mode=None, gossip_port=None, gossip_address=None,
         cmd.append(mode)
     return cmd
 
-def generate_cmds(mushroom):
+def generate_cmds(mushroom, size):
     initial_node_port = 7000
     cmds = [mushroom_cmd(mushroom, mode='spore', gossip_port=initial_node_port)]
 
-    for i in range(2):
+    for i in range(size - 1):
         cmds.append(mushroom_cmd(mushroom, gossip_port=initial_node_port+700+i,
             initial_node_port=initial_node_port,
             initial_node_address='127.0.0.1'))
 
     return cmds
 
-def main(mushroom):
-    commands = generate_cmds(mushroom)
+def main(mushroom, size):
+    commands = generate_cmds(mushroom, size)
     print('going to run a cluster with:')
     for c in commands:
         print(' '.join(c))
@@ -44,4 +44,9 @@ def main(mushroom):
 if __name__ == '__main__':
     mushroom = sys.argv[1]
 
-    main(mushroom)
+    if len(sys.argv) > 2:
+        size = int(sys.argv[2])
+    else:
+        size = 3
+
+    main(mushroom, size)
