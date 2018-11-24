@@ -4,6 +4,9 @@
 #include <http_parser.h>
 #include <uv.h>
 
+#include "api_response_builder.h"
+#include "api_response_reader.h"
+#include "api_response_json_printer.h"
 #include "api.h"
 #include "log.h"
 
@@ -125,6 +128,9 @@ struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int por
 	api->addr = calloc(1, sizeof(*api->addr));
 
 	api->loop = loop;
+
+	api->builder = malloc(sizeof(*api->builder));
+	flatcc_builder_init(api->builder);
 
 	api->server = malloc(sizeof(*api->server));
 	int err = uv_tcp_init(loop, api->server);
