@@ -15,6 +15,8 @@ enum opts {
 	OPT_GOSSIP_ADDRESS,
 	OPT_INITIAL_NODE_ADDRESS,
 	OPT_INITIAL_NODE_PORT,
+	OPT_API_ADDRESS,
+	OPT_API_PORT,
 };
 
 static int parse_port_option(const char *optarg)
@@ -41,6 +43,9 @@ void mushroom_conf_default(struct mushroom_conf *conf)
 
 	conf->initial_node_port = 6767;
 	conf->initial_node_address = NULL;
+
+	conf->api_port = 6969;
+	conf->api_address = "127.0.0.1";
 }
 
 void mushroom_conf_log(struct mushroom_conf *conf)
@@ -62,6 +67,8 @@ void mushroom_conf_log(struct mushroom_conf *conf)
 	mushroom_log_info("gossip_address: %s", conf->gossip_address);
 	mushroom_log_info("initial_node_port: %i", conf->initial_node_port);
 	mushroom_log_info("initial_node_address: %s", conf->initial_node_address);
+	mushroom_log_info("api_port: %i", conf->api_port);
+	mushroom_log_info("api_address: %s", conf->api_address);
 }
 
 bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
@@ -73,6 +80,8 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 		{ "gossip-address", required_argument, NULL, OPT_GOSSIP_ADDRESS },
 		{ "initial-node-port", required_argument, NULL, OPT_INITIAL_NODE_PORT },
 		{ "initial-node-address", required_argument, NULL, OPT_INITIAL_NODE_ADDRESS },
+		{ "api-port", required_argument, NULL, OPT_API_PORT },
+		{ "api-address", required_argument, NULL, OPT_API_ADDRESS },
 		{ 0 }
 	};
 
@@ -99,6 +108,13 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 			assert(optarg != NULL);
 			conf->initial_node_address = optarg;
 			break;
+		case OPT_API_PORT:
+			conf->api_port = parse_port_option(optarg);
+			break;
+		case OPT_API_ADDRESS:
+			assert(optarg != NULL);
+			conf->api_address = optarg;
+			break;
 		case 'h':
 			printf("Usage: %s [OPTIONS]\n", argv[0]);
 			printf("  -h, --help              print this help and exit\n");
@@ -106,6 +122,8 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 			printf("  --gossip-address        address the gossip server listens on\n");
 			printf("  --initial-node-port     port the initial node gossip server listens on\n");
 			printf("  --initial-node-address  address the initial node gossip server listens on\n");
+			printf("  --api-port              port the api server listens on\n");
+			printf("  --api-address           address the api server listens on\n");
 			return false;
 		default:
 			return false;

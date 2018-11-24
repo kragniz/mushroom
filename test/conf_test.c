@@ -9,6 +9,10 @@ TEST test_default_conf(void)
 
 	ASSERT_EQ_FMT(6868, conf.gossip_port, "%d");
 	ASSERT_STR_EQ("127.0.0.1", conf.gossip_address);
+
+	ASSERT_EQ_FMT(6969, conf.api_port, "%d");
+	ASSERT_STR_EQ("127.0.0.1", conf.api_address);
+
 	ASSERT_EQ(MUSHROOM_GROW, conf.mode);
 
 	PASS();
@@ -48,11 +52,15 @@ TEST test_conf_from_args_addr(void)
 	struct mushroom_conf conf = { 0 };
 	mushroom_conf_default(&conf);
 
-	bool ok = mushroom_conf_from_args(&conf, 3,
-					  (char *[]){ "mushroom", "--gossip-address", "0.0.0.0" });
+	bool ok = mushroom_conf_from_args(&conf, 5,
+					  (char *[]){ "mushroom", "--gossip-address", "0.0.0.0",
+						      "--api-address", "10.0.0.1" });
 
 	ASSERT_EQ(true, ok);
 	ASSERT_STR_EQ("0.0.0.0", conf.gossip_address);
+
+	ASSERT_EQ_FMT(6969, conf.api_port, "%d");
+	ASSERT_STR_EQ("10.0.0.1", conf.api_address);
 
 	PASS();
 }

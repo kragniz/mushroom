@@ -14,6 +14,9 @@ struct mushroom_conf {
 
 	int initial_node_port;
 	char *initial_node_address;
+
+	int api_port;
+	char *api_address;
 };
 
 void mushroom_conf_default(struct mushroom_conf *conf);
