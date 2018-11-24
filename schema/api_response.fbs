@@ -1,0 +1,16 @@
+namespace mushroom_api_response;
+
+table bytes {
+    value:[byte];
+}
+
+union value_contents {
+    bytes,
+}
+
+table message {
+    value: value_contents (required);
+}
+
+root_type message;
+file_identifier "MSHR";
