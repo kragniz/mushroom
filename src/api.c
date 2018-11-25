@@ -30,19 +30,19 @@ static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
 	buf->len = suggested_size;
 }
 
-void on_close(uv_handle_t *handle)
+static void on_close(uv_handle_t *handle)
 {
 	struct client *client = (struct client *)handle->data;
 	free(client);
 }
 
-void on_shutdown(uv_shutdown_t *shutdown_req, int status)
+static void on_shutdown(uv_shutdown_t *shutdown_req, int status)
 {
 	uv_close((uv_handle_t *)shutdown_req->handle, on_close);
 	free(shutdown_req);
 }
 
-void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf)
+static void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf)
 {
 	int err = 0;
 	struct client *client = (struct client *)handle->data;
@@ -71,7 +71,7 @@ void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf)
 	free(buf->base);
 }
 
-void on_connection(uv_stream_t *server, int status)
+static void on_connection(uv_stream_t *server, int status)
 {
 	if (status < 0) {
 		mushroom_log_error("on_connection: %s", uv_strerror(status));
@@ -102,13 +102,13 @@ void on_connection(uv_stream_t *server, int status)
 	}
 }
 
-void on_write(uv_write_t *write_req, int status)
+static void on_write(uv_write_t *write_req, int status)
 {
 	uv_close((uv_handle_t *)write_req->handle, on_close);
 	free(write_req);
 }
 
-int on_headers_complete(http_parser *parser)
+static int on_headers_complete(http_parser *parser)
 {
 	struct client *client = (struct client *)parser->data;
 
