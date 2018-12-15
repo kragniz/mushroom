@@ -22,6 +22,7 @@ static http_parser_settings parser_settings;
 struct client {
 	uv_tcp_t handle;
 	http_parser parser;
+	char *url;
 };
 
 static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
@@ -108,7 +109,35 @@ static void on_write(uv_write_t *write_req, int status)
 	free(write_req);
 }
 
+static int on_body(http_parser *parser, const char *buf, size_t len)
+{
+	struct client *client = (struct client *)parser->data;
+
+	mushroom_log_debug("body: %.*s", len, buf);
+
+	return 0;
+}
+
 static int on_headers_complete(http_parser *parser)
+{
+	struct client *client = (struct client *)parser->data;
+
+	return 0;
+}
+
+static int on_url(http_parser *parser, const char *buf, size_t len)
+{
+	struct client *client = (struct client *)parser->data;
+	client->url = malloc(len + 1);
+	strncpy(client->url, buf, len);
+	client->url[len] = '\0';
+
+	mushroom_log_debug("requested: %s", client->url);
+
+	return 0;
+}
+
+static int on_message_complete(http_parser *parser)
 {
 	struct client *client = (struct client *)parser->data;
 
@@ -118,13 +147,6 @@ static int on_headers_complete(http_parser *parser)
 	if (err < 0) {
 		mushroom_log_error("write: %s", uv_strerror(err));
 	}
-
-	return 0;
-}
-
-static int on_url(http_parser *parser, const char *buf, size_t len)
-{
-	mushroom_log_debug("requested: %.*s", len, buf);
 
 	return 0;
 }
@@ -152,6 +174,8 @@ struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int por
 
 	parser_settings.on_url = on_url;
 	parser_settings.on_headers_complete = on_headers_complete;
+	parser_settings.on_body = on_body;
+	parser_settings.on_message_complete = on_message_complete;
 
 	mushroom_log_debug("created mushroom_api:\t%p", api);
 
