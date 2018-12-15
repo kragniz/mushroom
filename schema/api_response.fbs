@@ -1,15 +1,20 @@
 namespace mushroom_api_response;
 
 table bytes {
-    value:[byte];
+    value: [ubyte];
+}
+
+table str {
+    value: string;
 }
 
 union value_contents {
     bytes,
+    str,
 }
 
 table message {
-    value: value_contents (required);
+    content: value_contents (required);
 }
 
 root_type message;

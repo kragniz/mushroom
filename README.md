@@ -34,3 +34,9 @@ Request:
   }
 }
 ```
+
+Response:
+
+```json
+{"content_type":"str","content":{"value":"toot toot"}}
+```

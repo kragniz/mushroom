@@ -152,23 +152,16 @@ static int on_message_complete(http_parser *parser)
 {
 	struct client *client = (struct client *)parser->data;
 
-	uv_write_t *write_req = malloc(sizeof(uv_write_t));
-	uv_buf_t buf = uv_buf_init(RESPONSE, sizeof(RESPONSE));
-	int err = uv_write(write_req, (uv_stream_t *)&client->handle, &buf, 1, on_write);
-	if (err < 0) {
-		mushroom_log_error("write: %s", uv_strerror(err));
-	}
-
 	flatcc_builder_t builder;
 	flatcc_builder_init(&builder);
 
-	flatbuffers_string_ref_t space = flatbuffers_string_create_str(&builder, "foo");
-	flatbuffers_string_ref_t name = flatbuffers_string_create_str(&builder, "bar");
-
-	mushroom_api_key_ref_t key = mushroom_api_key_create(&builder, space, name);
-	mushroom_api_get_ref_t get = mushroom_api_get_create(&builder, key);
-	mushroom_api_action_contents_union_ref_t action = mushroom_api_action_contents_as_get(get);
-	mushroom_api_message_ref_t message = mushroom_api_message_create_as_root(&builder, action);
+	flatbuffers_string_ref_t value = flatbuffers_string_create_str(
+		&builder, client->body ? client->body : "empty body, POST some data");
+	mushroom_api_response_str_ref_t str = mushroom_api_response_str_create(&builder, value);
+	mushroom_api_response_value_contents_union_ref_t value_contents =
+		mushroom_api_response_value_contents_as_str(str);
+	flatbuffers_buffer_ref_t message =
+		mushroom_api_response_message_create_as_root(&builder, value_contents);
 
 	size_t size = flatcc_builder_get_buffer_size(&builder);
 	char *fbuf = malloc(size + 1);
@@ -177,13 +170,21 @@ static int on_message_complete(http_parser *parser)
 	char jbuf[1024];
 	flatcc_json_printer_t *ctx = malloc(sizeof(*ctx));
 	flatcc_json_printer_init_buffer(ctx, jbuf, 1024);
-	api_request_print_json(ctx, fbuf, size);
+	int json_len = api_response_print_json(ctx, fbuf, size);
 	flatcc_json_printer_flush(ctx);
 	if (flatcc_json_printer_get_error(ctx)) {
 		mushroom_log_error("could not print json");
 	}
 	free(ctx);
-	mushroom_log_debug("request: %s", jbuf);
+	free(fbuf);
+	mushroom_log_debug("response: %s", jbuf);
+
+	uv_write_t *write_req = malloc(sizeof(uv_write_t));
+	uv_buf_t buf = uv_buf_init(jbuf, json_len);
+	int err = uv_write(write_req, (uv_stream_t *)&client->handle, &buf, 1, on_write);
+	if (err < 0) {
+		mushroom_log_error("write: %s", uv_strerror(err));
+	}
 
 	return 0;
 }
