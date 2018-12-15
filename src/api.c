@@ -23,6 +23,7 @@ struct client {
 	uv_tcp_t handle;
 	http_parser parser;
 	char *url;
+	char *body;
 };
 
 static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
@@ -113,7 +114,11 @@ static int on_body(http_parser *parser, const char *buf, size_t len)
 {
 	struct client *client = (struct client *)parser->data;
 
-	mushroom_log_debug("body: %.*s", len, buf);
+	client->body = malloc(len + 1);
+	strncpy(client->body, buf, len);
+	client->body[len] = '\0';
+
+	mushroom_log_debug("body: %s", client->body);
 
 	return 0;
 }
@@ -128,6 +133,7 @@ static int on_headers_complete(http_parser *parser)
 static int on_url(http_parser *parser, const char *buf, size_t len)
 {
 	struct client *client = (struct client *)parser->data;
+
 	client->url = malloc(len + 1);
 	strncpy(client->url, buf, len);
 	client->url[len] = '\0';
