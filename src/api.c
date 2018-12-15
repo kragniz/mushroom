@@ -1,13 +1,16 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "flatcc/flatcc_verifier.h"
 #include <http_parser.h>
 #include <uv.h>
 
 #include "api.h"
 #include "api_request_builder.h"
-#include "api_request_json_printer.h"
+#include "api_request_json_parser.h"
 #include "api_request_reader.h"
+#include "api_request_verifier.h"
 #include "api_response_builder.h"
 #include "api_response_json_printer.h"
 #include "api_response_reader.h"
@@ -27,6 +30,7 @@ struct client {
 	http_parser parser;
 	char *url;
 	char *body;
+	size_t body_len;
 };
 
 static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
@@ -122,6 +126,7 @@ static int on_body(http_parser *parser, const char *buf, size_t len)
 	client->body = malloc(len + 1);
 	strncpy(client->body, buf, len);
 	client->body[len] = '\0';
+	client->body_len = len;
 
 	mushroom_log_debug("body: %s", client->body);
 
@@ -151,12 +156,41 @@ static int on_url(http_parser *parser, const char *buf, size_t len)
 static int on_message_complete(http_parser *parser)
 {
 	struct client *client = (struct client *)parser->data;
-
 	flatcc_builder_t builder;
 	flatcc_builder_init(&builder);
 
-	flatbuffers_string_ref_t value = flatbuffers_string_create_str(
-		&builder, client->body ? client->body : "empty body, POST some data");
+	/* parse the incoming request */
+	flatcc_json_parser_t parse_ctx;
+	bool error_message = false;
+
+	api_request_parse_json(&builder, &parse_ctx, client->body, client->body_len, 0);
+	int err = flatcc_json_parser_get_error(&parse_ctx);
+	if (err) {
+		mushroom_log_error("could not parse json: %s",
+				   flatcc_json_parser_error_string(err));
+		error_message = true;
+	} else {
+		size_t out_size = 0;
+		void *flatbuffer = flatcc_builder_finalize_aligned_buffer(&builder, &out_size);
+		int ret = mushroom_api_message_verify_as_root(flatbuffer, out_size);
+		if (ret) {
+			mushroom_log_error("could not verify mushroom_api_message: %s",
+					   flatcc_verify_error_string(ret));
+		}
+	}
+
+	/* reinitilise builder */
+	flatcc_builder_reset(&builder);
+
+	/* build a response message */
+	flatbuffers_string_ref_t value;
+	if (error_message) {
+		value = flatbuffers_string_create_str(&builder,
+						      flatcc_json_parser_error_string(err));
+	} else {
+		value = flatbuffers_string_create_str(
+			&builder, client->body ? client->body : "empty body, POST some data");
+	}
 	mushroom_api_response_str_ref_t str = mushroom_api_response_str_create(&builder, value);
 	mushroom_api_response_value_contents_union_ref_t value_contents =
 		mushroom_api_response_value_contents_as_str(str);
@@ -179,9 +213,10 @@ static int on_message_complete(http_parser *parser)
 	free(fbuf);
 	mushroom_log_debug("response: %s", jbuf);
 
+	/*send the response message back */
 	uv_write_t *write_req = malloc(sizeof(uv_write_t));
 	uv_buf_t buf = uv_buf_init(jbuf, json_len);
-	int err = uv_write(write_req, (uv_stream_t *)&client->handle, &buf, 1, on_write);
+	err = uv_write(write_req, (uv_stream_t *)&client->handle, &buf, 1, on_write);
 	if (err < 0) {
 		mushroom_log_error("write: %s", uv_strerror(err));
 	}
