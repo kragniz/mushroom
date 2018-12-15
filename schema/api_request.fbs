@@ -6,15 +6,16 @@ table key {
 }
 
 table get {
-    key:key;
+    key: key;
 }
 
 table put {
-    key:key;
+    key: key;
+    value: [ubyte];
 }
 
 table delete {
-    key:key;
+    key: key;
 }
 
 union action_contents {
