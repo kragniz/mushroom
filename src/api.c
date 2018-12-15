@@ -143,6 +143,8 @@ struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int por
 		mushroom_log_fatal("init: %s", uv_strerror(err));
 	}
 
+	parser_settings.on_headers_complete = on_headers_complete;
+
 	mushroom_log_debug("created mushroom_api:\t%p", api);
 
 	mushroom_log_info("api listening on %s:%i", addr, port);
@@ -152,8 +154,6 @@ struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int por
 
 void mushroom_api_start(struct mushroom_api *api)
 {
-	parser_settings.on_headers_complete = on_headers_complete;
-
 	int err = uv_tcp_bind(api->server, (struct sockaddr *)api->addr, 0);
 	if (err < 0) {
 		mushroom_log_fatal("bind: %s", uv_strerror(err));
