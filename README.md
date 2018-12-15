@@ -17,3 +17,20 @@ Build:
     cd mushroom
     meson build
     ninja -C build
+
+API
+---
+
+Request:
+
+```json
+{
+  "action_type":"get",
+  "action": {
+    "key": {
+      "space": "foo",
+      "name": "bar"
+    }
+  }
+}
+```
