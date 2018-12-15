@@ -5,6 +5,9 @@
 #include <uv.h>
 
 #include "api.h"
+#include "api_request_builder.h"
+#include "api_request_json_printer.h"
+#include "api_request_reader.h"
 #include "api_response_builder.h"
 #include "api_response_json_printer.h"
 #include "api_response_reader.h"
@@ -155,6 +158,32 @@ static int on_message_complete(http_parser *parser)
 	if (err < 0) {
 		mushroom_log_error("write: %s", uv_strerror(err));
 	}
+
+	flatcc_builder_t builder;
+	flatcc_builder_init(&builder);
+
+	flatbuffers_string_ref_t space = flatbuffers_string_create_str(&builder, "foo");
+	flatbuffers_string_ref_t name = flatbuffers_string_create_str(&builder, "bar");
+
+	mushroom_api_key_ref_t key = mushroom_api_key_create(&builder, space, name);
+	mushroom_api_get_ref_t get = mushroom_api_get_create(&builder, key);
+	mushroom_api_action_contents_union_ref_t action = mushroom_api_action_contents_as_get(get);
+	mushroom_api_message_ref_t message = mushroom_api_message_create_as_root(&builder, action);
+
+	size_t size = flatcc_builder_get_buffer_size(&builder);
+	char *fbuf = malloc(size + 1);
+	flatcc_builder_copy_buffer(&builder, fbuf, size);
+
+	char jbuf[1024];
+	flatcc_json_printer_t *ctx = malloc(sizeof(*ctx));
+	flatcc_json_printer_init_buffer(ctx, jbuf, 1024);
+	api_request_print_json(ctx, fbuf, size);
+	flatcc_json_printer_flush(ctx);
+	if (flatcc_json_printer_get_error(ctx)) {
+		mushroom_log_error("could not print json");
+	}
+	free(ctx);
+	mushroom_log_debug("request: %s", jbuf);
 
 	return 0;
 }
