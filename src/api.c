@@ -35,6 +35,8 @@ static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
 static void on_close(uv_handle_t *handle)
 {
 	struct client *client = (struct client *)handle->data;
+	free(client->url);
+	free(client->body);
 	free(client);
 }
 
