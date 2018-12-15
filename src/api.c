@@ -119,7 +119,14 @@ static int on_headers_complete(http_parser *parser)
 		mushroom_log_error("write: %s", uv_strerror(err));
 	}
 
-	return 1;
+	return 0;
+}
+
+static int on_url(http_parser *parser, const char *buf, size_t len)
+{
+	mushroom_log_debug("requested: %.*s", len, buf);
+
+	return 0;
 }
 
 struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int port)
@@ -143,6 +150,7 @@ struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int por
 		mushroom_log_fatal("init: %s", uv_strerror(err));
 	}
 
+	parser_settings.on_url = on_url;
 	parser_settings.on_headers_complete = on_headers_complete;
 
 	mushroom_log_debug("created mushroom_api:\t%p", api);
