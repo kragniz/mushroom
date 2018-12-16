@@ -6,6 +6,11 @@ TEST test_workqueue(void)
 {
 	struct mushroom_workqueue *queue = mushroom_workqueue_new();
 	ASSERT_EQ_FMT(NULL, (void *)queue->head, "%p");
+
+	/* no items in the queue */
+	void *value = mushroom_workqueue_get(queue);
+	ASSERT_EQ_FMT(NULL, value, "%p");
+
 	PASS();
 }
 

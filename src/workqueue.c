@@ -14,3 +14,14 @@ struct mushroom_workqueue *mushroom_workqueue_new()
 
 	return queue;
 }
+
+void *mushroom_workqueue_get(struct mushroom_workqueue *q)
+{
+	/* queue is empty */
+	if (q->head == NULL) {
+		return NULL;
+	}
+
+    q->head = q->head->next;
+    return q->head;
+}
