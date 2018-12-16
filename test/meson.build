@@ -3,6 +3,7 @@ test_units = [
   'jump_test',
   'node_test',
   'ring_test',
+  'workqueue_test',
 ]
 
 greatest = include_directories('deps/greatest')
