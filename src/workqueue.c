@@ -15,13 +15,37 @@ struct mushroom_workqueue *mushroom_workqueue_new()
 	return queue;
 }
 
+static bool queue_is_empty(struct mushroom_workqueue *q)
+{
+	return (q->head == NULL);
+}
+
+bool mushroom_workqueue_put(struct mushroom_workqueue *q, void *data)
+{
+	struct mushroom_workqueue_node *new_node = malloc(sizeof(new_node));
+
+	new_node->data = data;
+	new_node->next = NULL;
+
+	if (queue_is_empty(q)) {
+		q->head = new_node;
+		q->tail = new_node;
+	} else {
+		q->tail->next = new_node;
+		q->tail = new_node;
+	}
+
+	return true;
+}
+
 void *mushroom_workqueue_get(struct mushroom_workqueue *q)
 {
-	/* queue is empty */
-	if (q->head == NULL) {
+	if (queue_is_empty(q)) {
 		return NULL;
 	}
 
-    q->head = q->head->next;
-    return q->head;
+	void *data = q->head->data;
+	q->head = q->head->next;
+
+	return data;
 }

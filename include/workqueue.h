@@ -13,5 +13,5 @@ struct mushroom_workqueue {
 };
 
 struct mushroom_workqueue *mushroom_workqueue_new();
-bool mushroom_workqueue_put(struct mushroom_workqueue *q, const void *data);
+bool mushroom_workqueue_put(struct mushroom_workqueue *q, void *data);
 void *mushroom_workqueue_get(struct mushroom_workqueue *q);
