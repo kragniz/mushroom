@@ -44,8 +44,10 @@ void *mushroom_workqueue_get(struct mushroom_workqueue *q)
 		return NULL;
 	}
 
-	void *data = q->head->data;
-	q->head = q->head->next;
+	struct mushroom_workqueue_node *old_head = q->head;
+	void *data = old_head->data;
+	q->head = old_head->next;
+	free(old_head);
 
 	return data;
 }
