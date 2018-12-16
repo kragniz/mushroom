@@ -7,6 +7,7 @@ sources = files([
   'log.c',
   'node.c',
   'ring.c',
+  'workqueue.c',
 ])
 
 libmushroom = static_library(
