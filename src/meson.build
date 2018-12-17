@@ -5,6 +5,7 @@ sources = files([
   'gossip_server.c',
   'jump.c',
   'log.c',
+  'map.c',
   'node.c',
   'ring.c',
   'workqueue.c',
