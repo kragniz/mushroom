@@ -25,7 +25,7 @@ Request:
 
 ```json
 {
-  "action_type":"get",
+  "action_type": "get",
   "action": {
     "key": {
       "space": "foo",
@@ -38,5 +38,10 @@ Request:
 Response:
 
 ```json
-{"content_type":"str","content":{"value":"toot toot"}}
+{
+  "content_type": "str",
+  "content": {
+    "value": "toot toot"
+  }
+}
 ```
