@@ -5,6 +5,8 @@
 #include "log.h"
 #include "map.h"
 
+static struct mushroom_map_item MUSHROOM_MAP_DELETED_ITEM = { NULL, NULL };
+
 struct mushroom_map *mushroom_map_new()
 {
 	struct mushroom_map *map = malloc(sizeof(*map));
@@ -39,7 +41,7 @@ void mushroom_map_free(struct mushroom_map *map)
 {
 	for (size_t i = 0; i < map->size; i++) {
 		struct mushroom_map_item *item = map->items[i];
-		if (item != NULL) {
+		if (item != NULL && item != &MUSHROOM_MAP_DELETED_ITEM) {
 			mushroom_map_item_free(item);
 		}
 	}
@@ -71,7 +73,7 @@ void mushroom_map_put(struct mushroom_map *map, const char *key, const char *val
 	int index = get_hash(item->key, map->size, 0);
 	struct mushroom_map_item *conflicting_item = map->items[index];
 	int i = 1;
-	while (conflicting_item != NULL) {
+	while (conflicting_item != NULL && conflicting_item != &MUSHROOM_MAP_DELETED_ITEM) {
 		index = get_hash(item->key, map->size, i);
 		conflicting_item = map->items[index];
 		i++;
@@ -86,12 +88,33 @@ char *mushroom_map_get(struct mushroom_map *map, const char *key)
 	struct mushroom_map_item *item = map->items[index];
 	int i = 1;
 	while (item != NULL) {
-		if (strcmp(item->key, key) == 0) {
-			return item->value;
+		if (item != &MUSHROOM_MAP_DELETED_ITEM) {
+			if (strcmp(item->key, key) == 0) {
+				return item->value;
+			}
 		}
 		index = get_hash(key, map->size, i);
 		item = map->items[index];
 		i++;
 	}
 	return NULL;
+}
+
+void mushroom_map_delete(struct mushroom_map *map, const char *key)
+{
+	int index = get_hash(key, map->size, 0);
+	struct mushroom_map_item *item = map->items[index];
+	int i = 1;
+	while (item != NULL) {
+		if (item != &MUSHROOM_MAP_DELETED_ITEM) {
+			if (strcmp(item->key, key) == 0) {
+				mushroom_map_item_free(item);
+				map->items[index] = &MUSHROOM_MAP_DELETED_ITEM;
+			}
+		}
+		index = get_hash(key, map->size, i);
+		item = map->items[index];
+		i++;
+	}
+	map->count--;
 }

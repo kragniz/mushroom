@@ -16,6 +16,11 @@ TEST test_map(void)
 	value = mushroom_map_get(map, "key");
 	ASSERT_STR_EQ("value", value);
 
+	/* delete the item */
+	mushroom_map_delete(map, "key");
+	value = mushroom_map_get(map, "key");
+	ASSERT_EQ_FMT(NULL, value, "%p");
+
 	mushroom_map_free(map);
 
 	PASS();
