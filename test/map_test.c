@@ -7,7 +7,14 @@ TEST test_map(void)
 	struct mushroom_map *map = mushroom_map_new();
 	ASSERT_EQ_FMT((size_t)0, map->count, "%zu");
 
+	/* try to get some key that doesn't exist */
+	char *value = mushroom_map_get(map, "key-doesn't-exist");
+	ASSERT_EQ_FMT(NULL, value, "%p");
+
+	/* store a value */
 	mushroom_map_put(map, "key", "value");
+	value = mushroom_map_get(map, "key");
+	ASSERT_STR_EQ("value", value);
 
 	mushroom_map_free(map);
 

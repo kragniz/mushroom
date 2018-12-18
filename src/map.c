@@ -79,3 +79,19 @@ void mushroom_map_put(struct mushroom_map *map, const char *key, const char *val
 	map->items[index] = item;
 	map->count++;
 }
+
+char *mushroom_map_get(struct mushroom_map *map, const char *key)
+{
+	int index = get_hash(key, map->size, 0);
+	struct mushroom_map_item *item = map->items[index];
+	int i = 1;
+	while (item != NULL) {
+		if (strcmp(item->key, key) == 0) {
+			return item->value;
+		}
+		index = get_hash(key, map->size, i);
+		item = map->items[index];
+		i++;
+	}
+	return NULL;
+}
