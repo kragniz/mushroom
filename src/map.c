@@ -5,6 +5,7 @@
 #include "log.h"
 #include "map.h"
 
+/* special item to indicate an item used to be stored in its location */
 static struct mushroom_map_item MUSHROOM_MAP_DELETED_ITEM = { NULL, NULL };
 
 struct mushroom_map *mushroom_map_new()
@@ -69,16 +70,26 @@ static int get_hash(const char *s, int buckets, int attempt)
 
 void mushroom_map_put(struct mushroom_map *map, const char *key, const char *value)
 {
-	struct mushroom_map_item *item = mushroom_map_item_new(key, value);
-	int index = get_hash(item->key, map->size, 0);
-	struct mushroom_map_item *conflicting_item = map->items[index];
+	struct mushroom_map_item *item_to_put = mushroom_map_item_new(key, value);
+	int index = get_hash(item_to_put->key, map->size, 0);
+	struct mushroom_map_item *current_item = map->items[index];
 	int i = 1;
-	while (conflicting_item != NULL && conflicting_item != &MUSHROOM_MAP_DELETED_ITEM) {
-		index = get_hash(item->key, map->size, i);
-		conflicting_item = map->items[index];
+
+	/* find a different index if the current one is already taken */
+	while (current_item != NULL) {
+		if (current_item != &MUSHROOM_MAP_DELETED_ITEM) {
+			/* if the current item has the same key, replace it */
+			if (strcmp(current_item->key, key) == 0) {
+				mushroom_map_item_free(current_item);
+				map->items[index] = item_to_put;
+				return;
+			}
+		}
+		index = get_hash(item_to_put->key, map->size, i);
+		current_item = map->items[index];
 		i++;
 	}
-	map->items[index] = item;
+	map->items[index] = item_to_put;
 	map->count++;
 }
 
