@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -58,6 +59,12 @@ size_t mushroom_map_get_size(struct mushroom_map *map)
 size_t mushroom_map_get_count(struct mushroom_map *map)
 {
 	return map->count;
+}
+
+static bool mushroom_map_needs_resize(const struct mushroom_map *map)
+{
+	const int load = (mushroom_map_get_count(map) * 100) / mushroom_map_get_size(map);
+	return (load > 70);
 }
 
 static int hash(const char *s, int a, int m)
