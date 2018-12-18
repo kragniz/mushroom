@@ -5,7 +5,7 @@
 TEST test_map(void)
 {
 	struct mushroom_map *map = mushroom_map_new();
-	ASSERT_EQ_FMT(0, map->count, "%d");
+	ASSERT_EQ_FMT((size_t)0, map->count, "%zu");
 
 	PASS();
 }
