@@ -50,6 +50,16 @@ void mushroom_map_free(struct mushroom_map *map)
 	free(map);
 }
 
+size_t mushroom_map_get_size(struct mushroom_map *map)
+{
+	return map->size;
+}
+
+size_t mushroom_map_get_count(struct mushroom_map *map)
+{
+	return map->count;
+}
+
 static int hash(const char *s, int a, int m)
 {
 	long hash = 0;

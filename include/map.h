@@ -18,3 +18,6 @@ void mushroom_map_free(struct mushroom_map *map);
 void mushroom_map_put(struct mushroom_map *map, const char *key, const char *value);
 char *mushroom_map_get(struct mushroom_map *map, const char *key);
 void mushroom_map_delete(struct mushroom_map *map, const char *key);
+
+size_t mushroom_map_get_size(struct mushroom_map *map);
+size_t mushroom_map_get_count(struct mushroom_map *map);
