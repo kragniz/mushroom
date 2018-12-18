@@ -8,7 +8,10 @@ project('mushroom', 'c',
   ],
 )
 
-if meson.get_compiler('c').get_id() == 'clang'
+cc = meson.get_compiler('c')
+m = cc.find_library('m', required: false)
+
+if cc.get_id() == 'clang'
   extra_args = ['-Wno-newline-eof']
 else
   extra_args = []
@@ -53,7 +56,7 @@ libuv = dependency('libuv')
 http_parser = subproject('http-parser')
 libhttp_parser = http_parser.get_variable('http_parser')
 libhttp_parser_include = http_parser.get_variable('include')
-deps = [libuv, git_version_h]
+deps = [libuv, git_version_h, m]
 
 flatcc_all = [
   flatcc_common,
