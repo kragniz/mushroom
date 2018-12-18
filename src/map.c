@@ -10,6 +10,7 @@ struct mushroom_map *mushroom_map_new()
 
 	map->count = 0;
 	map->size = 64;
+	map->items = calloc(map->size, sizeof(struct mushroom_map_item*));
 
 	mushroom_log_debug("created mushroom_map: %p", map);
 
@@ -24,4 +25,11 @@ static struct mushroom_map_item *mushroom_map_item_new(const char *key, const ch
 	item->value = strdup(value);
 
 	return item;
+}
+
+static void mushroom_map_item_free(struct mushroom_map_item *item)
+{
+    free(item->key);
+    free(item->value);
+    free(item);
 }
