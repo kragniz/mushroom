@@ -14,3 +14,4 @@ struct mushroom_map {
 };
 
 struct mushroom_map *mushroom_map_new();
+void mushroom_map_free(struct mushroom_map *map);
