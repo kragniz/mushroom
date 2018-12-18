@@ -1,3 +1,4 @@
+#include <math.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -44,4 +45,22 @@ void mushroom_map_free(struct mushroom_map *map)
 	}
 	free(map->items);
 	free(map);
+}
+
+static int hash(const char *s, int a, int m)
+{
+	long hash = 0;
+	const int len_s = strlen(s);
+	for (int i = 0; i < len_s; i++) {
+		hash += (long)pow(a, len_s - (i + 1)) * s[i];
+		hash = hash % m;
+	}
+	return (int)hash;
+}
+
+static int get_hash(const char *s, int buckets, int attempt)
+{
+	const int hash_a = hash(s, 163, buckets);
+	const int hash_b = hash(s, 173, buckets);
+	return (hash_a + (attempt * (hash_b + 1))) % buckets;
 }
