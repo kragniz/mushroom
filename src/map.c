@@ -73,8 +73,8 @@ static int hash(const char *s, int a, int m)
 
 static int get_hash(const char *s, int buckets, int attempt)
 {
-	const int hash_a = hash(s, 163, buckets);
-	const int hash_b = hash(s, 173, buckets);
+	const int hash_a = hash(s, 151, buckets);
+	const int hash_b = hash(s, 181, buckets);
 	return (hash_a + (attempt * (hash_b + 1))) % buckets;
 }
 
