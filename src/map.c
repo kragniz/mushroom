@@ -64,3 +64,18 @@ static int get_hash(const char *s, int buckets, int attempt)
 	const int hash_b = hash(s, 173, buckets);
 	return (hash_a + (attempt * (hash_b + 1))) % buckets;
 }
+
+void mushroom_map_put(struct mushroom_map *map, const char *key, const char *value)
+{
+	struct mushroom_map_item *item = mushroom_map_item_new(key, value);
+	int index = get_hash(item->key, map->size, 0);
+	struct mushroom_map_item *conflicting_item = map->items[index];
+	int i = 1;
+	while (conflicting_item != NULL) {
+		index = get_hash(item->key, map->size, i);
+		conflicting_item = map->items[index];
+		i++;
+	}
+	map->items[index] = item;
+	map->count++;
+}
