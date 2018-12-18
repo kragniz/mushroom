@@ -9,6 +9,27 @@
 /* special item to indicate an item used to be stored in its location */
 static struct mushroom_map_item MUSHROOM_MAP_DELETED_ITEM = { NULL, NULL };
 
+static bool is_prime(int x)
+{
+	if ((x % 2) == 0) {
+		return false;
+	}
+	for (int i = 3; i <= floor(sqrt((double)x)); i += 2) {
+		if ((x % i) == 0) {
+			return 0;
+		}
+	}
+	return true;
+}
+
+static int next_prime(int x)
+{
+	while (!is_prime(x)) {
+		x++;
+	}
+	return x;
+}
+
 struct mushroom_map *mushroom_map_new()
 {
 	struct mushroom_map *map = malloc(sizeof(*map));
