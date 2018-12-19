@@ -19,17 +19,17 @@ enum opts {
 	OPT_API_PORT,
 };
 
-static int parse_port_option(const char *optarg)
+static int parse_port_option(const char *arg)
 {
-	assert(optarg != NULL);
+	assert(arg != NULL);
 	errno = 0;
-	uintmax_t num = strtoumax(optarg, NULL, 10);
+	uintmax_t num = strtoumax(arg, NULL, 10);
 	if (errno != 0) {
 		mushroom_log_fatal(strerror(errno));
 	}
 
 	if (num <= 0) {
-		mushroom_log_fatal("invalid port number: %s", optarg);
+		mushroom_log_fatal("invalid port number: %s", arg);
 	}
 
 	return (int)num;
