@@ -5,5 +5,5 @@
 	path = subprojects/http-parser/http-parser
 	url = https://github.com/nodejs/http-parser.git
 [submodule "test/deps/theft/theft"]
-	path = test/deps/theft/theft
+	path = subprojects/theft/theft
 	url = https://github.com/silentbicycle/theft.git
