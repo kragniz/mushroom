@@ -50,25 +50,25 @@ TEST test_large_map(void)
 	for (int i = 0; i < key_number; i++) {
 		char key[10];
 		sprintf(key, "key-%d", i);
-		mushroom_map_put(map, key, "same value");
+		mushroom_map_put(map, key, key);
 	}
 
 	char *value = mushroom_map_get(map, "key-9");
 	ASSERT(value != NULL);
-	ASSERT_STR_EQ("same value", value);
+	ASSERT_STR_EQ("key-9", value);
 
 	for (int i = 0; i < key_number; i++) {
 		char key[10];
 		sprintf(key, "key-%d", i);
-		mushroom_map_put(map, key, "same value");
+		mushroom_map_put(map, key, key);
 		value = mushroom_map_get(map, key);
 		ASSERT(value != NULL);
-		ASSERT_STR_EQ("same value", value);
+		ASSERT_STR_EQ(key, value);
 	}
 
 	value = mushroom_map_get(map, "key-9");
 	ASSERT(value != NULL);
-	ASSERT_STR_EQ("same value", value);
+	ASSERT_STR_EQ("key-9", value);
 	ASSERT_EQ_FMT((size_t)300, mushroom_map_get_count(map), "%zu");
 
 	mushroom_map_free(map);

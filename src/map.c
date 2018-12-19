@@ -90,7 +90,7 @@ size_t mushroom_map_get_count(const struct mushroom_map *map)
 static bool mushroom_map_needs_resize(const struct mushroom_map *map)
 {
 	const int load = (mushroom_map_get_count(map) * 100) / mushroom_map_get_size(map);
-	return (load > 70);
+	return (load > 60);
 }
 
 static void mushroom_map_resize(struct mushroom_map *map, size_t new_size)
