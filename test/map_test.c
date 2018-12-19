@@ -40,9 +40,46 @@ TEST test_map(void)
 	PASS();
 }
 
+TEST test_large_map(void)
+{
+	struct mushroom_map *map = mushroom_map_new();
+	ASSERT_EQ_FMT((size_t)0, mushroom_map_get_count(map), "%zu");
+
+	int key_number = 300;
+
+	for (int i = 0; i < key_number; i++) {
+		char key[10];
+		sprintf(key, "key-%d", i);
+		mushroom_map_put(map, key, "same value");
+	}
+
+	char *value = mushroom_map_get(map, "key-9");
+	ASSERT(value != NULL);
+	ASSERT_STR_EQ("same value", value);
+
+	for (int i = 0; i < key_number; i++) {
+		char key[10];
+		sprintf(key, "key-%d", i);
+		mushroom_map_put(map, key, "same value");
+		value = mushroom_map_get(map, key);
+		ASSERT(value != NULL);
+		ASSERT_STR_EQ("same value", value);
+	}
+
+	value = mushroom_map_get(map, "key-9");
+	ASSERT(value != NULL);
+	ASSERT_STR_EQ("same value", value);
+	ASSERT_EQ_FMT((size_t)300, mushroom_map_get_count(map), "%zu");
+
+	mushroom_map_free(map);
+
+	PASS();
+}
+
 SUITE(map_suite)
 {
 	RUN_TEST(test_map);
+	RUN_TEST(test_large_map);
 }
 
 GREATEST_MAIN_DEFS();

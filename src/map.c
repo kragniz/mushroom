@@ -35,10 +35,10 @@ static struct mushroom_map *mushroom_map_new_with_size(size_t size)
 	struct mushroom_map *map = malloc(sizeof(*map));
 
 	map->count = 0;
-	map->size = size;
+	map->size = next_prime(size);
 	map->items = calloc(map->size, sizeof(struct mushroom_map_item *));
 
-	mushroom_log_debug("created mushroom_map: %p", map);
+	mushroom_log_debug("created mushroom_map with size %zu: %p", map->size, map);
 
 	return map;
 }
@@ -93,6 +93,29 @@ static bool mushroom_map_needs_resize(const struct mushroom_map *map)
 	return (load > 70);
 }
 
+static void mushroom_map_resize(struct mushroom_map *map, size_t new_size)
+{
+	struct mushroom_map *new_map = mushroom_map_new_with_size(new_size);
+	for (size_t i = 0; i < mushroom_map_get_size(map); i++) {
+		struct mushroom_map_item *item = map->items[i];
+		if (item != NULL && item != &MUSHROOM_MAP_DELETED_ITEM) {
+			mushroom_map_put(new_map, item->key, item->value);
+		}
+	}
+
+	map->count = new_map->count;
+
+	size_t tmp_size = map->size;
+	map->size = new_map->size;
+	new_map->size = tmp_size;
+
+	struct mushroom_map_item **tmp_items = map->items;
+	map->items = new_map->items;
+	new_map->items = tmp_items;
+
+	mushroom_map_free(new_map);
+}
+
 static int hash(const char *s, int a, int m)
 {
 	long hash = 0;
@@ -113,6 +136,10 @@ static int get_hash(const char *s, int buckets, int attempt)
 
 void mushroom_map_put(struct mushroom_map *map, const char *key, const char *value)
 {
+	if (mushroom_map_needs_resize(map)) {
+		mushroom_map_resize(map, mushroom_map_get_size(map) * 2);
+	}
+
 	struct mushroom_map_item *item_to_put = mushroom_map_item_new(key, value);
 	int index = get_hash(item_to_put->key, map->size, 0);
 	struct mushroom_map_item *current_item = map->items[index];
