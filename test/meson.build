@@ -15,7 +15,7 @@ foreach test_unit: test_units
     [test_unit + '.c'],
     link_with: libmushroom,
     include_directories: [mushroom_inc] + [greatest],
-    dependencies: deps,
+    dependencies: deps + [libtheft_dep],
   )
 
   test(

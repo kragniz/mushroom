@@ -77,6 +77,8 @@ mushroom = executable(
   dependencies: deps,
 )
 
+libtheft = subproject('theft')
+libtheft_dep = libtheft.get_variable('libtheft_dep')
 subdir('test')
 
 run_target(
