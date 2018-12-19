@@ -30,17 +30,22 @@ static int next_prime(int x)
 	return x;
 }
 
-struct mushroom_map *mushroom_map_new()
+static struct mushroom_map *mushroom_map_new_with_size(size_t size)
 {
 	struct mushroom_map *map = malloc(sizeof(*map));
 
 	map->count = 0;
-	map->size = 64;
+	map->size = size;
 	map->items = calloc(map->size, sizeof(struct mushroom_map_item *));
 
 	mushroom_log_debug("created mushroom_map: %p", map);
 
 	return map;
+}
+
+struct mushroom_map *mushroom_map_new()
+{
+	return mushroom_map_new_with_size(101);
 }
 
 static struct mushroom_map_item *mushroom_map_item_new(const char *key, const char *value)
@@ -72,12 +77,12 @@ void mushroom_map_free(struct mushroom_map *map)
 	free(map);
 }
 
-size_t mushroom_map_get_size(struct mushroom_map *map)
+size_t mushroom_map_get_size(const struct mushroom_map *map)
 {
 	return map->size;
 }
 
-size_t mushroom_map_get_count(struct mushroom_map *map)
+size_t mushroom_map_get_count(const struct mushroom_map *map)
 {
 	return map->count;
 }
