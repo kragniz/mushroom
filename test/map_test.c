@@ -9,7 +9,7 @@ TEST test_map(void)
 
 	/* try to get some key that doesn't exist */
 	char *value = mushroom_map_get(map, "key-doesn't-exist");
-	ASSERT_EQ_FMT(NULL, value, "%p");
+	ASSERT_EQ_FMT(NULL, (void *)value, "%p");
 
 	/* store a value */
 	mushroom_map_put(map, "key", "value");
@@ -26,7 +26,7 @@ TEST test_map(void)
 	/* delete the item */
 	mushroom_map_delete(map, "key");
 	value = mushroom_map_get(map, "key");
-	ASSERT_EQ_FMT(NULL, value, "%p");
+	ASSERT_EQ_FMT(NULL, (void *)value, "%p");
 	ASSERT_EQ_FMT((size_t)0, mushroom_map_get_count(map), "%zu");
 
 	/* write again */
