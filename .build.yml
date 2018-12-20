@@ -8,7 +8,7 @@ sources:
 tasks:
   - setup: |
       cd mushroom
-      meson build
+      meson -Db_sanitize=address build
   - build: |
       cd mushroom
       ninja -C build
