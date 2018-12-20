@@ -22,7 +22,7 @@ static bool queue_is_empty(struct mushroom_workqueue *q)
 
 bool mushroom_workqueue_put(struct mushroom_workqueue *q, void *data)
 {
-	struct mushroom_workqueue_node *new_node = malloc(sizeof(new_node));
+	struct mushroom_workqueue_node *new_node = malloc(sizeof(*new_node));
 
 	new_node->data = data;
 	new_node->next = NULL;
