@@ -1,8 +1,9 @@
 test_units = [
   'conf_test',
   'jump_test',
-  'node_test',
+  'map_property_test',
   'map_test',
+  'node_test',
   'ring_test',
   'workqueue_test',
 ]
