@@ -12,6 +12,8 @@ TEST test_node(void)
 	ASSERT_EQ_FMT(6969, node->gossip_port, "%d");
 	ASSERT_STR_EQ("127.0.0.1", node->address);
 
+	mushroom_node_free(node);
+
 	PASS();
 }
 
