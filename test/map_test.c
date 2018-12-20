@@ -76,10 +76,27 @@ TEST test_large_map(void)
 	PASS();
 }
 
+TEST test_weird_string_map(void)
+{
+	struct mushroom_map *map = mushroom_map_new();
+	char key[] = { '\x80', '\0' };
+	char value[] = { '\x06', '\0' };
+	mushroom_map_put(map, key, value);
+	char *v = mushroom_map_get(map, key);
+	ASSERT(v != NULL);
+	ASSERT_STR_EQ(value, v);
+	ASSERT_EQ_FMT((size_t)1, mushroom_map_get_count(map), "%zu");
+
+	mushroom_map_free(map);
+
+	PASS();
+}
+
 SUITE(map_suite)
 {
 	RUN_TEST(test_map);
 	RUN_TEST(test_large_map);
+	RUN_TEST(test_weird_string_map);
 }
 
 GREATEST_MAIN_DEFS();

@@ -67,6 +67,8 @@ static void mushroom_map_item_free(struct mushroom_map_item *item)
 
 void mushroom_map_free(struct mushroom_map *map)
 {
+	mushroom_log_debug("freed mushroom_map with size %zu: %p", map->size, map);
+
 	for (size_t i = 0; i < map->size; i++) {
 		struct mushroom_map_item *item = map->items[i];
 		if (item != NULL && item != &MUSHROOM_MAP_DELETED_ITEM) {
@@ -127,11 +129,16 @@ static int hash(const char *s, int a, int m)
 	return (int)hash;
 }
 
+static inline int positive_modulo(int i, int n)
+{
+	return (i % n + n) % n;
+}
+
 static int get_hash(const char *s, int buckets, int attempt)
 {
 	const int hash_a = hash(s, 151, buckets);
 	const int hash_b = hash(s, 181, buckets);
-	return (hash_a + (attempt * (hash_b + 1))) % buckets;
+	return positive_modulo((hash_a + (attempt * (hash_b + 1))), buckets);
 }
 
 void mushroom_map_put(struct mushroom_map *map, const char *key, const char *value)
