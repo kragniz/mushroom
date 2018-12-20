@@ -46,12 +46,29 @@ TEST test_workqueue(void)
 	value = mushroom_workqueue_get(queue);
 	ASSERT_EQ_FMT(NULL, value, "%p");
 
+	mushroom_workqueue_free(queue);
+
+	PASS();
+}
+
+TEST test_workqueue_free(void)
+{
+	struct mushroom_workqueue *queue = mushroom_workqueue_new();
+
+	int in_value = 69;
+	for (int i = 0; i < 20; i++) {
+		mushroom_workqueue_put(queue, (void *)&in_value);
+	}
+
+	mushroom_workqueue_free(queue);
+
 	PASS();
 }
 
 SUITE(workqueue_suite)
 {
 	RUN_TEST(test_workqueue);
+	RUN_TEST(test_workqueue_free);
 }
 
 GREATEST_MAIN_DEFS();
