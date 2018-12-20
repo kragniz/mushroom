@@ -15,6 +15,18 @@ struct mushroom_workqueue *mushroom_workqueue_new()
 	return queue;
 }
 
+void mushroom_workqueue_free(struct mushroom_workqueue *q)
+{
+	struct mushroom_workqueue_node *next = NULL;
+	struct mushroom_workqueue_node *head = q->head;
+	while (head != NULL) {
+		next = head;
+		head = head->next;
+		free(next);
+	}
+	free(q);
+}
+
 static bool queue_is_empty(struct mushroom_workqueue *q)
 {
 	return (q->head == NULL);
