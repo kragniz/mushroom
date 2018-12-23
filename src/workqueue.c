@@ -63,3 +63,8 @@ void *mushroom_workqueue_get(struct mushroom_workqueue *q)
 
 	return data;
 }
+
+void *mushroom_workqueue_peek(struct mushroom_workqueue *q)
+{
+	return q->head->data;
+}

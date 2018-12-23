@@ -65,10 +65,44 @@ TEST test_workqueue_free(void)
 	PASS();
 }
 
+TEST test_workqueue_peek(void)
+{
+	struct mushroom_workqueue *queue = mushroom_workqueue_new();
+
+	/* no items in the queue */
+	void *value = mushroom_workqueue_get(queue);
+	ASSERT_EQ_FMT(NULL, value, "%p");
+
+	int in_value = 69;
+	mushroom_workqueue_put(queue, (void *)&in_value);
+
+	/* peek at the next item from the queue */
+	void *out_value = mushroom_workqueue_peek(queue);
+	/* check it's the same value */
+	ASSERT_EQ_FMT(69, *(int *)out_value, "%d");
+
+	/* peek at the next item from the queue again */
+	out_value = mushroom_workqueue_peek(queue);
+	ASSERT_EQ_FMT(69, *(int *)out_value, "%d");
+
+	/* get the next item from the queue */
+	out_value = mushroom_workqueue_get(queue);
+	ASSERT_EQ_FMT(69, *(int *)out_value, "%d");
+
+	/* now no items left in the queue */
+	out_value = mushroom_workqueue_get(queue);
+	ASSERT_EQ_FMT(NULL, out_value, "%p");
+
+	mushroom_workqueue_free(queue);
+
+	PASS();
+}
+
 SUITE(workqueue_suite)
 {
 	RUN_TEST(test_workqueue);
 	RUN_TEST(test_workqueue_free);
+	RUN_TEST(test_workqueue_peek);
 }
 
 GREATEST_MAIN_DEFS();
