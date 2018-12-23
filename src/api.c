@@ -256,7 +256,7 @@ struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int por
 	parser_settings.on_body = on_body;
 	parser_settings.on_message_complete = on_message_complete;
 
-	mushroom_log_debug("created mushroom_api:\t%p", api);
+	mushroom_log_debug("created mushroom_api: %p", api);
 
 	mushroom_log_info("api listening on %s:%i", addr, port);
 
