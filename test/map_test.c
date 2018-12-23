@@ -92,11 +92,39 @@ TEST test_weird_string_map(void)
 	PASS();
 }
 
+int for_item_count;
+
+void for_item(struct mushroom_map_item *item)
+{
+	for_item_count++;
+}
+
+TEST test_map_for_each_key(void)
+{
+	struct mushroom_map *map = mushroom_map_new();
+
+	for (int i = 0; i < 15; i++) {
+		char key[10];
+		sprintf(key, "key-%d", i);
+		mushroom_map_put(map, key, key);
+	}
+
+	/* count the number of times the function was called */
+	for_item_count = 0;
+	mushroom_map_for_each_key(map, &for_item);
+	ASSERT_EQ_FMT(15, for_item_count, "%i");
+
+	mushroom_map_free(map);
+
+	PASS();
+}
+
 SUITE(map_suite)
 {
 	RUN_TEST(test_map);
 	RUN_TEST(test_large_map);
 	RUN_TEST(test_weird_string_map);
+	RUN_TEST(test_map_for_each_key);
 }
 
 GREATEST_MAIN_DEFS();

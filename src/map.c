@@ -206,3 +206,14 @@ void mushroom_map_delete(struct mushroom_map *map, const char *key)
 	}
 	map->count--;
 }
+
+void mushroom_map_for_each_key(struct mushroom_map *map,
+			       void for_item(struct mushroom_map_item *item))
+{
+	for (size_t i = 0; i < map->size; i++) {
+		struct mushroom_map_item *item = map->items[i];
+		if (item != NULL && item != &MUSHROOM_MAP_DELETED_ITEM) {
+			for_item(item);
+		}
+	}
+}
