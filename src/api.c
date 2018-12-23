@@ -166,7 +166,7 @@ static int on_message_complete(http_parser *parser)
 	api_request_parse_json(&builder, &parse_ctx, client->body, client->body_len, 0);
 	int err = flatcc_json_parser_get_error(&parse_ctx);
 	if (err) {
-		mushroom_log_error("could not parse json: %s",
+		mushroom_log_debug("could not parse json: %s",
 				   flatcc_json_parser_error_string(err));
 		error_message = true;
 	} else {
