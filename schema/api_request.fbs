@@ -3,6 +3,7 @@ namespace mushroom_api;
 table key {
     space: string;
     name: string;
+    revision: ulong;
 }
 
 table get {
