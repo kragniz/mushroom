@@ -8,6 +8,7 @@ sources = files([
   'map.c',
   'node.c',
   'ring.c',
+  'store.c',
   'workqueue.c',
 ])
 
