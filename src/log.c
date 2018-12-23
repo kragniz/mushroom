@@ -9,6 +9,11 @@ static const char *level_names[] = { "fatal", "error", "warning", "info", "debug
 
 static int log_level = MUSHROOM_LOG_DEBUG;
 
+void mushroom_log_set_level(enum mushroom_log_level level)
+{
+	log_level = level;
+}
+
 static void
 mushroom_log_msg(int level, const char *file, int line, const char *format, va_list argp)
 {

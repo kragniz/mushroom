@@ -19,5 +19,6 @@ enum mushroom_log_level {
 #define mushroom_log_error(...) mushroom_log(MUSHROOM_LOG_ERROR, _file, __LINE__, __VA_ARGS__)
 #define mushroom_log_fatal(...) _mushroom_log_fatal(_file, __LINE__, __VA_ARGS__)
 
+void mushroom_log_set_level(enum mushroom_log_level level);
 void mushroom_log(int level, const char *file, int line, const char *format, ...);
 void _mushroom_log_fatal(const char *file, int line, const char *format, ...);
