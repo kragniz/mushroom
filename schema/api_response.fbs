@@ -1,5 +1,9 @@
 namespace mushroom_api_response;
 
+table error {
+    value: string;
+}
+
 table bytes {
     value: [ubyte];
 }
@@ -9,6 +13,7 @@ table str {
 }
 
 union value_contents {
+    error,
     bytes,
     str,
 }

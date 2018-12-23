@@ -192,8 +192,14 @@ static int on_message_complete(http_parser *parser)
 			&builder, client->body ? client->body : "empty body, POST some data");
 	}
 	mushroom_api_response_str_ref_t str = mushroom_api_response_str_create(&builder, value);
-	mushroom_api_response_value_contents_union_ref_t value_contents =
-		mushroom_api_response_value_contents_as_str(str);
+
+	mushroom_api_response_value_contents_union_ref_t value_contents;
+	if (error_message) {
+		value_contents = mushroom_api_response_value_contents_as_error(str);
+	} else {
+		value_contents = mushroom_api_response_value_contents_as_str(str);
+	}
+
 	flatbuffers_buffer_ref_t message =
 		mushroom_api_response_message_create_as_root(&builder, value_contents);
 
