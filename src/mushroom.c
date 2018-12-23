@@ -21,6 +21,8 @@ int main(int argc, char **argv)
 	if (!ok)
 		exit(1);
 
+	mushroom_log_set_level(conf.log_level);
+
 	mushroom_log_info("🍄 %s", MUSHROOM_BUILD_ID);
 	mushroom_conf_log(&conf);
 

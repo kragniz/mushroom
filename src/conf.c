@@ -37,6 +37,8 @@ static int parse_port_option(const char *arg)
 
 void mushroom_conf_default(struct mushroom_conf *conf)
 {
+	conf->log_level = MUSHROOM_LOG_DEBUG;
+
 	conf->mode = MUSHROOM_GROW;
 	conf->gossip_port = 6868;
 	conf->gossip_address = "127.0.0.1";
@@ -50,6 +52,26 @@ void mushroom_conf_default(struct mushroom_conf *conf)
 
 void mushroom_conf_log(struct mushroom_conf *conf)
 {
+	char *log_level;
+	switch (conf->log_level) {
+	case MUSHROOM_LOG_FATAL:
+		log_level = "fatal";
+		break;
+	case MUSHROOM_LOG_ERROR:
+		log_level = "error";
+		break;
+	case MUSHROOM_LOG_WARN:
+		log_level = "warn";
+		break;
+	case MUSHROOM_LOG_INFO:
+		log_level = "info";
+		break;
+	case MUSHROOM_LOG_DEBUG:
+		log_level = "debug";
+		break;
+	}
+	mushroom_log_info("log_level: %s", log_level);
+
 	char *mode;
 	switch (conf->mode) {
 	case MUSHROOM_GROW:

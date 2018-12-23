@@ -2,12 +2,16 @@
 
 #include <stdbool.h>
 
+#include "log.h"
+
 enum mushroom_node_mode {
 	MUSHROOM_GROW,
 	MUSHROOM_SPORE,
 };
 
 struct mushroom_conf {
+	enum mushroom_log_level log_level;
+
 	enum mushroom_node_mode mode;
 	int gossip_port;
 	char *gossip_address;
