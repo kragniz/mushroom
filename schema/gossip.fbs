@@ -1,6 +1,8 @@
 namespace mushroom;
 
-table join_request {}
+table join_request {
+    node_id: ulong;
+}
 
 table join_response {}
 

@@ -45,7 +45,8 @@ static void gossip_event_callback(uv_timer_t *handle)
 	uv_ip4_addr(client->ring->nodes[0]->address, client->ring->nodes[0]->gossip_port,
 		    &send_addr);
 
-	mushroom_join_request_ref_t join_request = mushroom_join_request_create(client->builder);
+	mushroom_join_request_ref_t join_request =
+		mushroom_join_request_create(client->builder, 100);
 	mushroom_message_contents_union_ref_t contents =
 		mushroom_message_contents_as_join_request(join_request);
 	mushroom_gossip_message_create_as_root(client->builder, 7070, contents);
