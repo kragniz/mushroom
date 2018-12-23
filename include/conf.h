@@ -9,18 +9,19 @@ enum mushroom_node_mode {
 	MUSHROOM_SPORE,
 };
 
+struct mushroom_conf_port {
+	int port;
+	char *address;
+};
+
 struct mushroom_conf {
 	enum mushroom_log_level log_level;
 
 	enum mushroom_node_mode mode;
-	int gossip_port;
-	char *gossip_address;
 
-	int initial_node_port;
-	char *initial_node_address;
-
-	int api_port;
-	char *api_address;
+	struct mushroom_conf_port gossip;
+	struct mushroom_conf_port initial_node;
+	struct mushroom_conf_port api;
 };
 
 void mushroom_conf_default(struct mushroom_conf *conf);

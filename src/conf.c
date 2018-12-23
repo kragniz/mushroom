@@ -40,14 +40,14 @@ void mushroom_conf_default(struct mushroom_conf *conf)
 	conf->log_level = MUSHROOM_LOG_DEBUG;
 
 	conf->mode = MUSHROOM_GROW;
-	conf->gossip_port = 6868;
-	conf->gossip_address = "127.0.0.1";
+	conf->gossip.port = 6868;
+	conf->gossip.address = "127.0.0.1";
 
-	conf->initial_node_port = 6767;
-	conf->initial_node_address = NULL;
+	conf->initial_node.port = 6767;
+	conf->initial_node.address = NULL;
 
-	conf->api_port = 6969;
-	conf->api_address = "127.0.0.1";
+	conf->api.port = 6969;
+	conf->api.address = "127.0.0.1";
 }
 
 void mushroom_conf_log(struct mushroom_conf *conf)
@@ -85,12 +85,12 @@ void mushroom_conf_log(struct mushroom_conf *conf)
 		break;
 	}
 	mushroom_log_info("mode: %s", mode);
-	mushroom_log_info("gossip_port: %i", conf->gossip_port);
-	mushroom_log_info("gossip_address: %s", conf->gossip_address);
-	mushroom_log_info("initial_node_port: %i", conf->initial_node_port);
-	mushroom_log_info("initial_node_address: %s", conf->initial_node_address);
-	mushroom_log_info("api_port: %i", conf->api_port);
-	mushroom_log_info("api_address: %s", conf->api_address);
+	mushroom_log_info("gossip_port: %i", conf->gossip.port);
+	mushroom_log_info("gossip_address: %s", conf->gossip.address);
+	mushroom_log_info("initial_node_port: %i", conf->initial_node.port);
+	mushroom_log_info("initial_node_address: %s", conf->initial_node.address);
+	mushroom_log_info("api_port: %i", conf->api.port);
+	mushroom_log_info("api_address: %s", conf->api.address);
 }
 
 bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
@@ -117,25 +117,25 @@ bool mushroom_conf_from_args(struct mushroom_conf *conf, int argc, char *argv[])
 		case 0:
 			return false;
 		case OPT_GOSSIP_PORT:
-			conf->gossip_port = parse_port_option(optarg);
+			conf->gossip.port = parse_port_option(optarg);
 			break;
 		case OPT_GOSSIP_ADDRESS:
 			assert(optarg != NULL);
-			conf->gossip_address = optarg;
+			conf->gossip.address = optarg;
 			break;
 		case OPT_INITIAL_NODE_PORT:
-			conf->initial_node_port = parse_port_option(optarg);
+			conf->initial_node.port = parse_port_option(optarg);
 			break;
 		case OPT_INITIAL_NODE_ADDRESS:
 			assert(optarg != NULL);
-			conf->initial_node_address = optarg;
+			conf->initial_node.address = optarg;
 			break;
 		case OPT_API_PORT:
-			conf->api_port = parse_port_option(optarg);
+			conf->api.port = parse_port_option(optarg);
 			break;
 		case OPT_API_ADDRESS:
 			assert(optarg != NULL);
-			conf->api_address = optarg;
+			conf->api.address = optarg;
 			break;
 		case 'h':
 			printf("Usage: %s [OPTIONS]\n", argv[0]);
