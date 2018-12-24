@@ -201,7 +201,7 @@ static int on_message_complete(http_parser *parser)
 	}
 
 	flatbuffers_buffer_ref_t message =
-		mushroom_api_response_message_create_as_root(&builder, value_contents);
+		mushroom_api_response_message_create_as_root(&builder, 2, value_contents);
 
 	size_t size = flatcc_builder_get_buffer_size(&builder);
 	char *fbuf = malloc(size + 1);
