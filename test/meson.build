@@ -5,6 +5,7 @@ test_units = [
   'map_test',
   'node_test',
   'ring_test',
+  'store_test',
   'workqueue_test',
 ]
 
