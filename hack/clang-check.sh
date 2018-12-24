@@ -6,6 +6,7 @@ clang-check -fixit -analyze src/*.c include/*.h test/*.c -- \
     -Ibuild \
     -Itest/deps/greatest \
     -Ibuild/mushroom@exe/ \
+    -Isubprojects/theft/theft/inc/ \
     -Isubprojects/http-parser/http-parser/ \
     -Isubprojects/flatcc/rules \
     -Isubprojects/flatcc/include/ \
