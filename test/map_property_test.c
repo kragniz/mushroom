@@ -36,7 +36,7 @@ TEST test_map_valid_keys(void)
         },
         .bloom_bits = 20,
         .seed = seed,
-        .trials = 500,
+        .trials = 100,
 		.fork = {
 			.enable = true,
 			.timeout = 20000,
