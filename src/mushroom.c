@@ -11,6 +11,7 @@
 #include "gossip_server.h"
 #include "log.h"
 #include "ring.h"
+#include "store.h"
 #include "version.h"
 
 int main(int argc, char **argv)
@@ -27,6 +28,8 @@ int main(int argc, char **argv)
 	mushroom_conf_log(&conf);
 
 	uv_loop_t *uv_loop = uv_default_loop();
+
+	struct mushroom_store *store = mushroom_store_new();
 
 	struct mushroom_gossip_server *gossip_server =
 		mushroom_gossip_server_new(uv_loop, conf.gossip.address, conf.gossip.port);
