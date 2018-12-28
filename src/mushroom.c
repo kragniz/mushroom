@@ -43,7 +43,8 @@ int main(int argc, char **argv)
 	struct mushroom_gossip_client *gossip_client = mushroom_gossip_client_new(uv_loop, ring);
 	mushroom_gossip_client_start(gossip_client);
 
-	struct mushroom_api *api = mushroom_api_new(uv_loop, conf.api.address, conf.api.port);
+	struct mushroom_api *api =
+		mushroom_api_new(uv_loop, store, conf.api.address, conf.api.port);
 	mushroom_api_start(api);
 
 	return uv_run(uv_loop, UV_RUN_DEFAULT);

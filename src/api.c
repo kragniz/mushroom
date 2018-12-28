@@ -15,6 +15,7 @@
 #include "api_response_json_printer.h"
 #include "api_response_reader.h"
 #include "log.h"
+#include "store.h"
 
 #define RESPONSE                                                                                   \
 	"HTTP/1.1 200 OK\r\n"                                                                      \
@@ -230,7 +231,8 @@ static int on_message_complete(http_parser *parser)
 	return 0;
 }
 
-struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int port)
+struct mushroom_api *
+mushroom_api_new(uv_loop_t *loop, struct mushroom_store *store, const char *addr, int port)
 {
 	struct mushroom_api *api = calloc(1, sizeof(*api));
 	api->addr = calloc(1, sizeof(*api->addr));
@@ -239,6 +241,8 @@ struct mushroom_api *mushroom_api_new(uv_loop_t *loop, const char *addr, int por
 
 	api->builder = malloc(sizeof(*api->builder));
 	flatcc_builder_init(api->builder);
+
+	api->store = store;
 
 	api->server = malloc(sizeof(*api->server));
 	int err = uv_tcp_init(loop, api->server);
