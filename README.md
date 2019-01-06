@@ -15,7 +15,7 @@ Clone:
 Build:
 
     cd mushroom
-    meson build
+    meson -Db_sanitize=address,undefined build
     ninja -C build
 
 API
