@@ -5,7 +5,7 @@
 struct mushroom_gossip_server {
 	uv_loop_t *loop;
 	struct sockaddr_in *addr;
-	uv_udp_t *server;
+	uv_tcp_t *server;
 };
 
 struct mushroom_gossip_server *
