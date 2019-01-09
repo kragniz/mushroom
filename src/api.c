@@ -17,13 +17,6 @@
 #include "log.h"
 #include "store.h"
 
-#define RESPONSE                                                                                   \
-	"HTTP/1.1 200 OK\r\n"                                                                      \
-	"Content-Type: application/json\r\n"                                                       \
-	"Content-Length: 22\r\n"                                                                   \
-	"\r\n"                                                                                     \
-	"and you've been gnomed\n"
-
 static http_parser_settings parser_settings;
 
 struct client {
