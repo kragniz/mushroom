@@ -45,3 +45,7 @@ Response:
   }
 }
 ```
+
+Example with curl:
+
+    curl -d '{"action_type":"get","action": {"key": {"space": "foo","name": "bar"}}}' localhost:6969
