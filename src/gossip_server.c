@@ -88,6 +88,7 @@ static void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf)
 
 void on_connection(uv_stream_t *server, int status)
 {
+	mushroom_log_debug("on_connection: client connected");
 	struct client *client = calloc(1, sizeof(*client));
 	int err = uv_tcp_init(server->loop, &client->handle);
 	if (err < 0) {

@@ -14,6 +14,11 @@ static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
 	buf->len = suggested_size;
 }
 
+static void on_close(uv_handle_t *handle)
+{
+	mushroom_log_debug("closing");
+}
+
 static void after_write(uv_write_t *req, int status)
 {
 	assert(status == 0);
@@ -56,11 +61,28 @@ static void write_gossip_message(struct mushroom_gossip_client *client, uv_strea
 	flatcc_builder_reset(client->builder);
 }
 
+static void read_cb(uv_stream_t *stream, ssize_t nread, const uv_buf_t *buf)
+{
+	struct mushroom_gossip_client *client = (struct mushroom_gossip_client *)stream->data;
+
+	if (nread < 0) {
+		assert(nread == UV_EOF);
+		mushroom_log_debug("got EOF");
+		free(buf->base);
+		uv_close((uv_handle_t *)stream, on_close);
+		return;
+	}
+
+	uv_close((uv_handle_t *)stream, on_close);
+	free(buf->base);
+}
+
 static void on_connect(uv_connect_t *req, int status)
 {
 	struct mushroom_gossip_client *client = (struct mushroom_gossip_client *)req->data;
 
 	write_gossip_message(client, req->handle);
+	uv_read_start(req->handle, on_alloc, read_cb);
 }
 
 static void gossip_event_callback(uv_timer_t *handle)
