@@ -14,36 +14,17 @@ static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
 	buf->len = suggested_size;
 }
 
-void on_send(uv_udp_send_t *req, int status)
+static void after_write(uv_write_t *req, int status)
 {
-	if (status) {
-		mushroom_log_error("Send error %s\n", uv_strerror(status));
-	}
-	free(req->data);
+	assert(status == 0);
 	free(req);
 }
 
-static void gossip_event_callback(uv_timer_t *handle)
+static void write_gossip_message(struct mushroom_gossip_client *client, uv_stream_t *stream)
 {
-	struct mushroom_gossip_client *client = (struct mushroom_gossip_client *)handle->data;
-
-	if (client->ring->node_count <= 0) {
-		mushroom_log_debug("no nodes to gossip with");
-		return;
-	} else {
-		mushroom_log_debug("gossiping");
-	}
-
 	uv_buf_t gossip_msg;
 	on_alloc(NULL, 256, &gossip_msg);
 	memset(gossip_msg.base, 0, gossip_msg.len);
-
-	uv_udp_t *send_socket = malloc(sizeof(*send_socket));
-	uv_udp_init(client->loop, send_socket);
-
-	struct sockaddr_in send_addr;
-	uv_ip4_addr(client->ring->nodes[0]->address, client->ring->nodes[0]->gossip_port,
-		    &send_addr);
 
 	mushroom_join_request_ref_t join_request =
 		mushroom_join_request_create(client->builder, 100);
@@ -67,12 +48,46 @@ static void gossip_event_callback(uv_timer_t *handle)
 	free(ctx);
 	mushroom_log_debug("sending gossip message: %s", buf);
 
-	uv_udp_send_t *send_req = malloc(sizeof(*send_req));
-	send_req->data = (void *)gossip_msg.base;
-	uv_udp_send(send_req, send_socket, &gossip_msg, 1, (const struct sockaddr *)&send_addr,
-		    on_send);
+	uv_write_t *req = malloc(sizeof(*req));
+	if (uv_write(req, stream, &gossip_msg, 1, after_write)) {
+		mushroom_log_error("uv_write failed");
+	}
 
 	flatcc_builder_reset(client->builder);
+}
+
+static void on_connect(uv_connect_t *req, int status)
+{
+	struct mushroom_gossip_client *client = (struct mushroom_gossip_client *)req->data;
+
+	write_gossip_message(client, req->handle);
+}
+
+static void gossip_event_callback(uv_timer_t *handle)
+{
+	struct mushroom_gossip_client *client = (struct mushroom_gossip_client *)handle->data;
+
+	if (client->ring->node_count <= 0) {
+		mushroom_log_debug("no nodes to gossip with");
+		return;
+	} else {
+		mushroom_log_debug("gossiping");
+	}
+
+	uv_buf_t gossip_msg;
+	on_alloc(NULL, 256, &gossip_msg);
+	memset(gossip_msg.base, 0, gossip_msg.len);
+
+	uv_tcp_t *send_socket = malloc(sizeof(*send_socket));
+	uv_tcp_init(client->loop, send_socket);
+
+	struct sockaddr_in send_addr;
+	uv_ip4_addr(client->ring->nodes[0]->address, client->ring->nodes[0]->gossip_port,
+		    &send_addr);
+
+	uv_connect_t *connect = malloc(sizeof(*connect));
+	connect->data = client;
+	uv_tcp_connect(connect, send_socket, (const struct sockaddr *)&send_addr, on_connect);
 }
 
 struct mushroom_gossip_client *mushroom_gossip_client_new(uv_loop_t *loop,
