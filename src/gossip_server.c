@@ -2,6 +2,8 @@
 
 #include <uv.h>
 
+#include "gossip_builder.h"
+#include "gossip_json_printer.h"
 #include "gossip_reader.h"
 #include "gossip_server.h"
 #include "log.h"
@@ -107,6 +109,9 @@ mushroom_gossip_server_new(uv_loop_t *loop, const char *addr, int port)
 	struct mushroom_gossip_server *server = calloc(1, sizeof(*server));
 	server->addr = calloc(1, sizeof(*server->addr));
 	server->server = calloc(1, sizeof(*server->server));
+
+	server->builder = malloc(sizeof(*server->builder));
+	flatcc_builder_init(server->builder);
 
 	server->loop = loop;
 
