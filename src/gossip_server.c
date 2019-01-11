@@ -21,24 +21,6 @@ static void handle_gossip_message(mushroom_gossip_message_table_t *msg)
 		mushroom_log_debug("gossip message was of type join");
 }
 
-static void on_recv(uv_udp_t *handle,
-		    ssize_t nread,
-		    const uv_buf_t *buf,
-		    const struct sockaddr *addr,
-		    unsigned flags)
-{
-	mushroom_log_debug("received gossip message");
-	if (nread > 0) {
-		mushroom_gossip_message_table_t msg = mushroom_gossip_message_as_root(buf->base);
-		if (msg == NULL) {
-			mushroom_log_error("gossip message couldn't be parsed");
-		} else {
-			handle_gossip_message(&msg);
-		}
-	}
-	free(buf->base);
-}
-
 static void on_alloc(uv_handle_t *client, size_t suggested_size, uv_buf_t *buf)
 {
 	buf->base = malloc(suggested_size);
@@ -69,6 +51,13 @@ static void on_read(uv_stream_t *handle, ssize_t nread, const uv_buf_t *buf)
 	struct client *client = (struct client *)handle->data;
 
 	if (nread > 0) {
+		mushroom_gossip_message_table_t msg = mushroom_gossip_message_as_root(buf->base);
+		if (msg == NULL) {
+			mushroom_log_error("gossip message couldn't be parsed");
+		} else {
+			handle_gossip_message(&msg);
+		}
+
 		uv_write_t *write_req = malloc(sizeof(uv_write_t));
 		client->buf = uv_buf_init(buf->base, nread);
 		int err = uv_write(write_req, (uv_stream_t *)&client->handle, &client->buf, 1,
