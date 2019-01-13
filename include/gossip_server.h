@@ -2,6 +2,8 @@
 
 #include <uv.h>
 
+#include "gossip_builder.h"
+
 struct mushroom_gossip_server {
 	uv_loop_t *loop;
 	struct sockaddr_in *addr;
