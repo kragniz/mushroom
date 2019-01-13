@@ -4,6 +4,7 @@ table key {
     space: string;
     name: string;
     revision: ulong;
+    lifetime: ulong;
 }
 
 table get {
