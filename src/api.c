@@ -129,8 +129,6 @@ static int on_body(http_parser *parser, const char *buf, size_t len)
 
 static int on_headers_complete(http_parser *parser)
 {
-	struct client *client = (struct client *)parser->data;
-
 	return 0;
 }
 
