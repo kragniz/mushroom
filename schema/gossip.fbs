@@ -6,13 +6,7 @@ table join_request {
 
 table join_response {}
 
-table something_request {}
-
-table something_response { thing:uint; }
-
 union message_contents {
-    something_request,
-    something_response,
     join_request,
     join_response,
 }
